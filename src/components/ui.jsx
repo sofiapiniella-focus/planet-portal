@@ -72,6 +72,26 @@ export function Badge({ status, children, className = '' }) {
   )
 }
 
+// Affiliate-platform tag — visually distinct from status badges.
+// Impact = blue, GoAffPro = green.
+const PLATFORM_STYLES = {
+  Impact: 'bg-blue-100 text-blue-700',
+  GoAffPro: 'bg-green-100 text-green-700',
+}
+
+export function PlatformBadge({ platform, className = '' }) {
+  if (!platform) return null
+  const style = PLATFORM_STYLES[platform] || 'bg-espresso/10 text-espresso/70'
+  return (
+    <span
+      title={`${platform} platform`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${style} ${className}`}
+    >
+      {platform}
+    </span>
+  )
+}
+
 export function EmptyState({ title, hint }) {
   return (
     <div className="text-center py-12 px-6">

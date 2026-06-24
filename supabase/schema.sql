@@ -16,6 +16,8 @@ create table if not exists public.partners (
   instagram       text,
   status          text not null default 'Contacted'
                     check (status in ('Contacted','Interested','Active Partner','Passed')),
+  platform        text not null default 'GoAffPro'      -- affiliate platform the partner runs through
+                    check (platform in ('Impact','GoAffPro')),
   commission_link text,
   partner_message text,                 -- partner's note left for the admin (Lauren)
   created_at      timestamptz not null default now()

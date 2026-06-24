@@ -1,7 +1,10 @@
 node_modules
 .npm-cache
 dist
-.env
+/.env/*
+!/.env/
+!/.env/.gitkeep
+.env.backup
 .env.local
 .env.*.local
 .vercel

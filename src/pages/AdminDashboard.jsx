@@ -2,11 +2,12 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { Badge, Spinner, FullPageLoader, EmptyState, Field } from '../components/ui'
+import { Badge, PlatformBadge, Spinner, FullPageLoader, EmptyState, Field } from '../components/ui'
 
 const PARTNER_STATUSES = ['Contacted', 'Interested', 'Active Partner', 'Passed']
 const KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending', 'Returned']
 const CONTENT_TYPES = ['Reel', 'Feed Post', 'Story', 'Blog Post']
+const PLATFORMS = ['GoAffPro', 'Impact']
 
 export default function AdminDashboard() {
   const { signOut } = useAuth()
@@ -121,20 +122,61 @@ function Modal({ title, children, onClose }) {
 
 function PartnersTab({ partners, onChange }) {
   const [editing, setEditing] = useState(null) // partner object or {} for new
+  const [platformFilter, setPlatformFilter] = useState('All') // All | GoAffPro | Impact
+
+  const counts = partners.reduce(
+    (acc, p) => {
+      if (p.platform) acc[p.platform] = (acc[p.platform] || 0) + 1
+      return acc
+    },
+    { GoAffPro: 0, Impact: 0 }
+  )
+  const filtered =
+    platformFilter === 'All'
+      ? partners
+      : partners.filter((p) => p.platform === platformFilter)
+
+  const filterTabs = [
+    { id: 'All', label: `All (${partners.length})` },
+    { id: 'GoAffPro', label: `GoAffPro (${counts.GoAffPro})` },
+    { id: 'Impact', label: `Impact (${counts.Impact})` },
+  ]
 
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-heading text-3xl text-espresso">
-          Partners <span className="text-espresso/30 text-xl">({partners.length})</span>
+          Partners <span className="text-espresso/30 text-xl">({filtered.length})</span>
         </h2>
         <button onClick={() => setEditing({})} className="btn-gold">
           + Add partner
         </button>
       </div>
 
+      {/* Platform filter */}
+      <div className="flex flex-wrap gap-2 mb-5">
+        {filterTabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setPlatformFilter(t.id)}
+            className={`rounded-full px-4 py-1.5 text-xs font-medium tracking-wide border transition ${
+              platformFilter === t.id
+                ? 'border-gold bg-gold/15 text-espresso'
+                : 'border-espresso/15 text-espresso/55 hover:border-espresso/40'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       {partners.length === 0 ? (
         <EmptyState title="No partners yet" hint="Add your first partner to get started." />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          title={`No ${platformFilter} partners`}
+          hint="Try a different platform filter, or set a partner's platform when editing them."
+        />
       ) : (
         <div className="card overflow-hidden">
           <table className="w-full text-sm">
@@ -142,6 +184,7 @@ function PartnersTab({ partners, onChange }) {
               <tr className="text-left text-espresso/50 text-xs uppercase tracking-widest border-b border-espresso/10">
                 <th className="px-5 py-3 font-medium">Name</th>
                 <th className="px-5 py-3 font-medium">Email</th>
+                <th className="px-5 py-3 font-medium">Platform</th>
                 <th className="px-5 py-3 font-medium">Instagram</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium">Note</th>
@@ -149,10 +192,17 @@ function PartnersTab({ partners, onChange }) {
               </tr>
             </thead>
             <tbody>
-              {partners.map((p) => (
+              {filtered.map((p) => (
                 <tr key={p.id} className="border-b border-espresso/5 last:border-0">
                   <td className="px-5 py-3 font-medium text-espresso">{p.name}</td>
                   <td className="px-5 py-3 text-espresso/60">{p.email}</td>
+                  <td className="px-5 py-3">
+                    {p.platform ? (
+                      <PlatformBadge platform={p.platform} />
+                    ) : (
+                      <span className="text-espresso/25">—</span>
+                    )}
+                  </td>
                   <td className="px-5 py-3 text-espresso/60">{p.instagram || '—'}</td>
                   <td className="px-5 py-3">
                     <Badge status={p.status} />
@@ -205,6 +255,7 @@ function PartnerModal({ partner, onClose, onSaved }) {
     email: partner.email || '',
     instagram: partner.instagram || '',
     status: partner.status || 'Contacted',
+    platform: partner.platform || 'GoAffPro',
     commission_link: partner.commission_link || '',
   })
   const [busy, setBusy] = useState(false)
@@ -274,6 +325,17 @@ function PartnerModal({ partner, onClose, onSaved }) {
             ))}
           </select>
         </Field>
+        <Field label="Platform">
+          <select
+            className="input"
+            value={form.platform}
+            onChange={(e) => set('platform', e.target.value)}
+          >
+            {PLATFORMS.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+          </select>
+        </Field>
         <Field label="Commission link">
           <input
             className="input"
@@ -315,6 +377,48 @@ function PartnerModal({ partner, onClose, onSaved }) {
 
 /* ─────────────────────────── Kit Tracker ─────────────────────────── */
 
+// Whole days from today (local, date-only) until a YYYY-MM-DD date.
+// Negative = the date is in the past.
+function daysUntil(dateStr) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const target = new Date(y, m - 1, d)
+  target.setHours(0, 0, 0, 0)
+  return Math.round((target - today) / 86400000)
+}
+
+// 30-day return-window countdown pill. Milestones are days REMAINING:
+// >15 normal · ≤15 follow-up due (amber) · ≤5 final follow-up (red) · past = overdue.
+function ReturnCountdown({ date }) {
+  const left = daysUntil(date)
+  let tone, label
+  if (left < 0) {
+    tone = 'bg-red-200 text-red-800'
+    label = `Overdue by ${Math.abs(left)} ${Math.abs(left) === 1 ? 'day' : 'days'}`
+  } else {
+    const noun = left === 1 ? 'day' : 'days'
+    if (left <= 5) {
+      tone = 'bg-red-100 text-red-700'
+      label = `${left} ${noun} left · final follow-up`
+    } else if (left <= 15) {
+      tone = 'bg-amber-100 text-amber-700'
+      label = `${left} ${noun} left · follow-up due`
+    } else {
+      tone = 'bg-espresso/10 text-espresso/60'
+      label = `${left} ${noun} left`
+    }
+  }
+  return (
+    <span
+      title={`Return by ${date}`}
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium tracking-wide ${tone}`}
+    >
+      {label}
+    </span>
+  )
+}
+
 function KitsTab({ partners, kits, pieces, onChange }) {
   const [editing, setEditing] = useState(null) // { partner, kit }
 
@@ -341,11 +445,13 @@ function KitsTab({ partners, kits, pieces, onChange }) {
                   <div>
                     <div className="flex items-center gap-3">
                       <h3 className="font-heading text-xl text-espresso">{p.name}</h3>
+                      <PlatformBadge platform={p.platform} />
                       {kit ? (
                         <Badge status={kit.status} />
                       ) : (
                         <span className="text-xs text-espresso/40">No kit</span>
                       )}
+                      {kit?.return_by_date && <ReturnCountdown date={kit.return_by_date} />}
                     </div>
                     {kit && (
                       <div className="flex flex-wrap gap-x-6 gap-y-1 mt-2 text-xs text-espresso/55">

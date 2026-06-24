@@ -1,0 +1,261 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PLANET — Partner Portal preview (Ava Monroe)</title>
+<!--
+  STATIC PREVIEW / MOCK of the affiliate-facing Partner Portal (src/pages/PartnerPortal.jsx).
+  Faithfully reproduces the brand styling (tailwind.config.js + src/index.css) and lays out
+  the seed "test partner" Ava Monroe (supabase/seed.sql). This is NOT live — no Supabase, no
+  auth, no data writes. The Keep/Return/Copy/Save controls are inert here.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --cream: #f7f3ee;
+    --espresso: #2c1f1a;
+    --espresso-soft: #5a4a40;
+    --gold: #b8936a;
+    --gold-soft: #d9c3a9;
+    --shadow-card: 0 2px 16px rgba(44, 31, 26, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--espresso);
+    font-family: Montserrat, system-ui, sans-serif;
+    font-weight: 400;
+  }
+  h1, h2, h3, h4 { font-family: "Cormorant Garamond", Georgia, serif; margin: 0; }
+
+  /* preview ribbon (not part of the real app) */
+  .ribbon {
+    background: var(--espresso);
+    color: var(--cream);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 7px 12px;
+  }
+  .ribbon b { color: var(--gold-soft); font-weight: 600; }
+
+  /* header */
+  header.bar {
+    border-bottom: 1px solid rgba(44, 31, 26, 0.05);
+    background: rgba(247, 243, 238, 0.8);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .bar-inner {
+    max-width: 56rem; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .wordmark { font-family: "Cormorant Garamond", serif; font-size: 20px; letter-spacing: 0.2em; }
+  .wordmark span { color: var(--gold); font-size: 12px; letter-spacing: 0.3em; }
+
+  main { max-width: 56rem; margin: 0 auto; padding: 40px 24px 80px; }
+  .stack > * + * { margin-top: 24px; }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.25em; color: var(--gold); margin: 0;
+  }
+
+  h1.hello { font-size: clamp(40px, 6vw, 52px); color: var(--espresso); margin-top: 4px; font-weight: 500; }
+  .subtitle { color: rgba(44, 31, 26, 0.6); margin-top: 8px; font-weight: 300; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(44, 31, 26, 0.05);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+  }
+
+  /* buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 9999px; padding: 10px 20px; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em; border: 0; cursor: pointer; transition: all .2s; width: 100%;
+    font-family: Montserrat, sans-serif;
+  }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:hover { filter: brightness(1.05); }
+  .btn-primary { background: var(--espresso); color: var(--cream); }
+  .btn-primary:hover { background: var(--espresso-soft); }
+  .btn-ghost { background: transparent; color: rgba(44,31,26,.7); width: auto; padding: 8px 14px; }
+  .btn-ghost:hover { color: var(--espresso); background: rgba(44,31,26,.05); }
+  .btn-outline { background: transparent; border: 1px solid rgba(44,31,26,.2); color: var(--espresso); }
+  .btn-outline:hover { border-color: rgba(44,31,26,.5); }
+
+  .link-box {
+    margin-top: 12px; background: var(--cream); border: 1px solid rgba(44,31,26,.05);
+    border-radius: 12px; padding: 12px 16px; font-size: 13px; word-break: break-all;
+  }
+
+  /* badge */
+  .badge {
+    display: inline-flex; align-items: center; border-radius: 9999px;
+    padding: 4px 12px; font-size: 12px; font-weight: 500; letter-spacing: .02em;
+  }
+  .badge-delivered { background: #dcfce7; color: #15803d; }
+  .badge-keep { background: #dcfce7; color: #15803d; }
+  .badge-return { background: #fef3c7; color: #b45309; }
+
+  .muted { color: rgba(44,31,26,.6); font-size: 14px; }
+  .muted b { color: var(--espresso); font-weight: 500; }
+
+  /* earnings */
+  .earn-balance { font-family: "Cormorant Garamond", serif; font-size: 40px; color: var(--gold); font-weight: 500; }
+  .earn-cap { font-size: 12px; color: rgba(44,31,26,.5); margin-top: 4px; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .stat { background: var(--cream); border: 1px solid rgba(44,31,26,.05); border-radius: 12px; padding: 10px 12px; }
+  .stat .v { font-weight: 500; font-size: 14px; }
+  .stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: .2em; color: rgba(44,31,26,.4); margin-top: 2px; }
+
+  /* kit pieces */
+  .pieces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+  @media (max-width: 900px) { .pieces { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .pieces { grid-template-columns: 1fr; } }
+  .piece { border: 1px solid rgba(44,31,26,.05); background: #fff; border-radius: 16px; overflow: hidden; }
+  .piece .photo { aspect-ratio: 4 / 5; background: var(--cream); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .piece .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .piece .body { padding: 16px; }
+  .piece h3 { font-size: 18px; line-height: 1.15; color: var(--espresso); font-weight: 500; }
+  .piece .color { font-size: 12px; color: rgba(44,31,26,.5); margin-top: 2px; }
+  .piece .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .piece .actions .btn { font-size: 12px; padding: 8px; }
+
+  textarea.input {
+    width: 100%; border-radius: 12px; border: 1px solid rgba(44,31,26,.15);
+    background: rgba(255,255,255,.8); padding: 12px 16px; font-size: 14px;
+    font-family: Montserrat, sans-serif; resize: none; margin-top: 12px; color: var(--espresso);
+  }
+  textarea.input::placeholder { color: rgba(44,31,26,.4); }
+  .note-row { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 12px; }
+  .note-row .btn { width: auto; padding: 10px 20px; }
+  .sample-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .18em; color: rgba(44,31,26,.35); margin-top: 10px; }
+</style>
+
+<div class="ribbon">
+  Static preview · Partner Portal as seen by <b>Ava Monroe</b> (test affiliate) · not connected to live data
+</div>
+
+<!-- ── Top bar (PartnerPortal header) ── -->
+<header class="bar">
+  <div class="bar-inner">
+    <div class="wordmark">PLANET <span>by Lauren G</span></div>
+    <button class="btn btn-ghost">Sign out</button>
+  </div>
+</header>
+
+<main class="stack">
+  <!-- Welcome -->
+  <div>
+    <p class="eyebrow">Welcome back</p>
+    <h1 class="hello">Hello, Ava</h1>
+    <p class="subtitle">So glad to have you in the PLANET Style Collective.</p>
+  </div>
+
+  <!-- Commission link + earnings -->
+  <div class="grid2">
+    <div class="card">
+      <p class="eyebrow">Your commission link</p>
+      <div class="link-box">https://planetbylaureng.com/?ref=avamonroe</div>
+      <button class="btn btn-gold" style="margin-top:16px;">Copy link</button>
+    </div>
+
+    <div class="card">
+      <p class="eyebrow">Commission earnings</p>
+      <!-- Populated GoAffPro state (sample figures, to show the layout) -->
+      <div style="margin-top:16px;">
+        <div class="earn-balance">$1,284.50</div>
+        <div class="earn-cap">Current balance</div>
+        <div class="stat-grid">
+          <div class="stat"><div class="v">$420.00</div><div class="k">Unpaid</div></div>
+          <div class="stat"><div class="v">$864.50</div><div class="k">Paid out</div></div>
+          <div class="stat"><div class="v">$9,640.00</div><div class="k">Total sales</div></div>
+          <div class="stat"><div class="v">37</div><div class="k">Orders</div></div>
+        </div>
+        <p class="sample-tag">Sample GoAffPro figures — real numbers load once the admin token is connected</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kit status + pieces -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <p class="eyebrow">Your kit</p>
+      <span class="badge badge-delivered">Delivered</span>
+    </div>
+
+    <p class="muted" style="margin-top:12px;">Tracking: <b>1Z999AA10123456784</b></p>
+    <p class="muted" style="margin-top:4px;">Please decide on returns by <b>2026-07-06</b></p>
+
+    <div class="pieces">
+      <!-- Piece 1 -->
+      <div class="piece">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600" alt="The Lauren Blazer" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>The Lauren Blazer</h3>
+          <p class="color">Espresso</p>
+          <div class="actions">
+            <button class="btn btn-outline">Keep</button>
+            <button class="btn btn-outline">Return</button>
+          </div>
+        </div>
+      </div>
+      <!-- Piece 2 -->
+      <div class="piece">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" alt="Silk Slip Dress" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Silk Slip Dress</h3>
+          <p class="color">Champagne</p>
+          <div class="actions">
+            <button class="btn btn-outline">Keep</button>
+            <button class="btn btn-outline">Return</button>
+          </div>
+        </div>
+      </div>
+      <!-- Piece 3 -->
+      <div class="piece">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600" alt="Cashmere Wrap" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Cashmere Wrap</h3>
+          <p class="color">Warm Cream</p>
+          <div class="actions">
+            <button class="btn btn-outline">Keep</button>
+            <button class="btn btn-outline">Return</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Partner note -->
+  <div class="card">
+    <p class="eyebrow">Leave Lauren a note</p>
+    <p class="muted" style="margin-top:8px;">Questions, feedback, or anything you'd like to share.</p>
+    <textarea class="input" rows="4" placeholder="Type your message…"></textarea>
+    <div class="note-row">
+      <button class="btn btn-primary">Save note</button>
+    </div>
+  </div>
+</main>
