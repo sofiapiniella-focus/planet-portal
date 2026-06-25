@@ -11,6 +11,46 @@ function money(n) {
   )
 }
 
+// Resolve a kit's return-by date: prefer the stored return_by_date (already
+// delivered + 30 by convention); otherwise compute delivered_date + 30 days.
+function kitReturnByDate(kit) {
+  if (!kit) return null
+  if (kit.return_by_date) return kit.return_by_date
+  const delivered = kit.delivered_date || kit.delivered_at || kit.delivery_date
+  if (!delivered) return null
+  const [y, m, d] = String(delivered).split('-').map(Number)
+  const dt = new Date(y, m - 1, d)
+  dt.setDate(dt.getDate() + 30)
+  const mm = String(dt.getMonth() + 1).padStart(2, '0')
+  const dd = String(dt.getDate()).padStart(2, '0')
+  return `${dt.getFullYear()}-${mm}-${dd}`
+}
+
+// Whole days from local midnight today until the given YYYY-MM-DD date.
+function daysUntil(dateStr) {
+  const [y, m, d] = String(dateStr).split('-').map(Number)
+  const target = new Date(y, m - 1, d)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return Math.round((target - today) / 86400000)
+}
+
+function formatLongDate(dateStr) {
+  const [y, m, d] = String(dateStr).split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+function returnCountdownLabel(daysLeft) {
+  if (daysLeft < 0) return 'Return overdue'
+  if (daysLeft === 0) return 'Last day to return'
+  if (daysLeft === 1) return '1 day left'
+  return `${daysLeft} days left`
+}
+
 export default function PartnerPortal() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
@@ -229,6 +269,10 @@ function Stat({ label, value }) {
 }
 
 function KitSection({ kit, pieces, onChange }) {
+  const isDelivered = kit?.status === 'Delivered'
+  const returnBy = isDelivered ? kitReturnByDate(kit) : null
+  const daysLeft = returnBy ? daysUntil(returnBy) : null
+
   return (
     <Card>
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -249,10 +293,17 @@ function KitSection({ kit, pieces, onChange }) {
               <span className="text-espresso font-medium">{kit.tracking_number}</span>
             </p>
           )}
-          {kit.return_by_date && (
+          {returnBy && (
             <p className="text-sm text-espresso/60 mt-1">
-              Please decide on returns by{' '}
-              <span className="text-espresso font-medium">{kit.return_by_date}</span>
+              Please return by:{' '}
+              <span className="text-espresso font-medium">{formatLongDate(returnBy)}</span>{' '}
+              <span
+                className={
+                  daysLeft < 0 ? 'text-amber-600 font-medium' : 'text-espresso/50'
+                }
+              >
+                ({returnCountdownLabel(daysLeft)})
+              </span>
             </p>
           )}
 
