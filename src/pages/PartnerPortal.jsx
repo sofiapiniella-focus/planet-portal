@@ -20,7 +20,6 @@ export default function PartnerPortal() {
   const [kit, setKit] = useState(null)
   const [pieces, setPieces] = useState([])
   const [notFound, setNotFound] = useState(false)
-  const [commissions, setCommissions] = useState({ loading: true })
 
   const load = useCallback(async () => {
     if (!user?.email) return
@@ -66,18 +65,6 @@ export default function PartnerPortal() {
   useEffect(() => {
     load()
   }, [load])
-
-  // Commission summary (incl. link clicks) — fetched once and shared by the
-  // commission-link card and the earnings card.
-  useEffect(() => {
-    let active = true
-    fetchMyCommissions()
-      .then((d) => active && setCommissions({ loading: false, data: d }))
-      .catch((e) => active && setCommissions({ loading: false, error: e.message }))
-    return () => {
-      active = false
-    }
-  }, [])
 
   if (loading) return <FullPageLoader label="Opening your portal…" />
 
@@ -135,8 +122,8 @@ export default function PartnerPortal() {
 
         {/* Commission link + earnings */}
         <div className="grid md:grid-cols-2 gap-6">
-          <CommissionLink link={partner.commission_link} commissions={commissions} />
-          <Earnings commissions={commissions} />
+          <CommissionLink link={partner.commission_link} />
+          <Earnings />
         </div>
 
         {/* Kit status + pieces */}
@@ -149,7 +136,7 @@ export default function PartnerPortal() {
   )
 }
 
-function CommissionLink({ link, commissions }) {
+function CommissionLink({ link }) {
   const [copied, setCopied] = useState(false)
 
   async function copy() {
@@ -163,11 +150,6 @@ function CommissionLink({ link, commissions }) {
     }
   }
 
-  // Link clicks from GoAffPro, shown only once the summary has loaded.
-  const clicks = commissions?.data?.found
-    ? Number(commissions.data.earnings.clicks || 0)
-    : null
-
   return (
     <Card>
       <p className="eyebrow">Your commission link</p>
@@ -176,11 +158,6 @@ function CommissionLink({ link, commissions }) {
           <div className="mt-3 bg-cream rounded-xl px-4 py-3 text-sm text-espresso break-all border border-espresso/5">
             {link}
           </div>
-          {clicks !== null && (
-            <p className="mt-2 text-xs text-espresso/50">
-              {clicks.toLocaleString()} link {clicks === 1 ? 'click' : 'clicks'}
-            </p>
-          )}
           <button onClick={copy} className="btn-gold mt-4 w-full">
             {copied ? '✓ Copied' : 'Copy link'}
           </button>
@@ -194,8 +171,18 @@ function CommissionLink({ link, commissions }) {
   )
 }
 
-function Earnings({ commissions }) {
-  const state = commissions
+function Earnings() {
+  const [state, setState] = useState({ loading: true })
+
+  useEffect(() => {
+    let active = true
+    fetchMyCommissions()
+      .then((d) => active && setState({ loading: false, data: d }))
+      .catch((e) => active && setState({ loading: false, error: e.message }))
+    return () => {
+      active = false
+    }
+  }, [])
 
   return (
     <Card>
