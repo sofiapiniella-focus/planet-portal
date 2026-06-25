@@ -127,11 +127,11 @@
     {
       "id": "a0000000-0000-4000-8000-000000000013",
       "partner_email": "debie@imagemattersswfl.com",
-      "status": "Shipped",
+      "status": "Delivered",
       "ship_date": "2026-06-24",
       "tracking_number": "1Z11JR320308137489",
-      "return_by_date": null,
-      "notes": "Confirmed against typed stock transfer TR-00212. SHIPPED 2026-06-24 via UPS to 4753 Imperial Eagle Drive, Fort Myers FL 33966. Color analyst - cool palette, no warm tones, no black on top. Commission link sent."
+      "return_by_date": "2026-07-25",
+      "notes": "Confirmed against typed stock transfer TR-00212. SHIPPED 2026-06-24 via UPS to 4753 Imperial Eagle Drive, Fort Myers FL 33966. Delivered 2026-06-25. Return window through 2026-07-25. Color analyst - cool palette, no warm tones, no black on top. Commission link sent."
     }
   ],
   "kit_pieces": [
