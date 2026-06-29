@@ -287,7 +287,7 @@ function OverviewTab({ partners, kits, pieces, content }) {
               <Spinner /> Loading Impact…
             </div>
           ) : impact.error ? (
-            <p className="text-sm text-espresso/50 py-6">
+            <p className="text-sm text-espresso/50 py-6 break-words whitespace-pre-wrap">
               Couldn't load Impact right now. {impact.error}
             </p>
           ) : !connected ? (

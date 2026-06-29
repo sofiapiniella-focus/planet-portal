@@ -83,16 +83,26 @@ export default async function handler(req, res) {
 
   try {
     // ── Conversions (Actions) → sales, orders, commission, recent activity ──
+    // Impact's Actions endpoint (Advertiser API) filters EventDate via
+    // ActionDateStart/ActionDateEnd, both requiring a FULL ISO-8601 datetime
+    // with time + timezone (e.g. 2026-06-29T00:00:00Z) — a bare YYYY-MM-DD is
+    // rejected. stamp() already yields that. The span must be ≤ 45 days (ours
+    // is 30).
+    //
+    // PageSize: Impact enforces a MINIMUM page size of 2,000 (default 20,000).
+    // Sending PageSize=100 is below that floor and is rejected with HTTP 400 —
+    // this was the bug. 2000 is the smallest accepted value and is plenty for a
+    // 30-day window. (Page is 1-based.)
     const actionsUrl =
       `${IMPACT_BASE}/Advertisers/${sid}/Actions` +
       `?ActionDateStart=${encodeURIComponent(stamp(start))}` +
       `&ActionDateEnd=${encodeURIComponent(stamp(end))}` +
-      `&PageSize=100&Page=1`
+      `&PageSize=2000&Page=1`
     const actionsResp = await fetch(actionsUrl, { headers: impactHeaders })
     if (!actionsResp.ok) {
       // Surface the REAL cause: Impact's HTTP status + the start of its
       // response body. console.error so it also lands in the Vercel logs.
-      const body = (await actionsResp.text().catch(() => '')).slice(0, 200)
+      const body = (await actionsResp.text().catch(() => '')).slice(0, 300)
       console.error(
         `Impact Actions request failed: ${actionsResp.status} ${actionsResp.statusText} — ${body}`
       )
@@ -158,10 +168,11 @@ export default async function handler(req, res) {
       recentActions,
     })
   } catch (err) {
+    console.error('Impact request error:', err)
     return res.status(502).json({
       connected: true,
       error: 'Impact request error',
-      detail: String(err).slice(0, 200),
+      detail: String(err).slice(0, 300),
     })
   }
 }

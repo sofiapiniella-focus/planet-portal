@@ -14,13 +14,20 @@ export async function fetchImpactSummary() {
   const resp = await fetch('/api/impact', { headers })
 
   if (!resp.ok) {
+    let error = ''
     let detail = ''
     try {
-      detail = (await resp.json())?.error || ''
+      const body = await resp.json()
+      error = body?.error || ''
+      detail = body?.detail || ''
     } catch {
       /* ignore */
     }
-    throw new Error(detail || `Impact lookup failed (${resp.status})`)
+    // Surface Impact's literal complaint (the `detail` body) alongside our
+    // summary, so the dashboard shows WHY it failed — not just the HTTP code.
+    const parts = [error || `Impact lookup failed (${resp.status})`]
+    if (detail) parts.push(`— Impact says: ${detail}`)
+    throw new Error(parts.join(' '))
   }
 
   return resp.json()
