@@ -100,7 +100,7 @@ export default function AdminDashboard() {
         </div>
 
         {tab === 'overview' && (
-          <OverviewTab partners={partners} kits={kits} content={content} />
+          <OverviewTab partners={partners} kits={kits} pieces={pieces} content={content} />
         )}
         {tab === 'partners' && <PartnersTab partners={partners} onChange={load} />}
         {tab === 'kits' && (
@@ -150,7 +150,7 @@ function ConnectImpact({ message }) {
   )
 }
 
-function OverviewTab({ partners, kits, content }) {
+function OverviewTab({ partners, kits, pieces, content }) {
   const [impact, setImpact] = useState({ loading: true })
 
   useEffect(() => {
@@ -178,6 +178,27 @@ function OverviewTab({ partners, kits, content }) {
   deliveredPartnerIds.forEach((pid) => {
     if (!loggedPartnerIds.has(pid)) outstanding += 1
   })
+
+  // Stylist purchases — kit pieces a partner chose to keep (= buy), grouped by
+  // partner. Source: kit_pieces.partner_decision === 'keep' (case-insensitive,
+  // since the DB stores 'Keep'). purchase_amount is nullable → renders "—".
+  const partnerNameById = Object.fromEntries(partners.map((p) => [p.id, p.name]))
+  const partnerIdByKit = Object.fromEntries(kits.map((k) => [k.id, k.partner_id]))
+  const keptPieces = (pieces || []).filter(
+    (pc) => (pc.partner_decision || '').toLowerCase() === 'keep'
+  )
+  const keptByPartner = []
+  for (const pc of keptPieces) {
+    const name = partnerNameById[partnerIdByKit[pc.kit_id]] || 'Unknown'
+    let group = keptByPartner.find((g) => g.name === name)
+    if (!group) {
+      group = { name, items: [] }
+      keptByPartner.push(group)
+    }
+    group.items.push(pc)
+  }
+  keptByPartner.sort((a, b) => a.name.localeCompare(b.name))
+  const totalKeptSales = keptPieces.reduce((s, pc) => s + Number(pc.purchase_amount || 0), 0)
 
   const imp = impact.data
   const connected = Boolean(imp?.connected)
@@ -260,6 +281,55 @@ function OverviewTab({ partners, kits, content }) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Stylist purchases / kept items */}
+      <div className="card p-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+          <div>
+            <h3 className="font-heading text-xl text-espresso mb-1">
+              Stylist Purchases · Kept Items
+            </h3>
+            <p className="text-xs text-espresso/45">
+              Pieces partners chose to keep (buy) from their kits
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-heading text-2xl text-gold leading-none">
+              {money(totalKeptSales)}
+            </p>
+            <p className="text-[10px] uppercase tracking-widest text-espresso/40 mt-1">
+              Total kept-item sales
+            </p>
+          </div>
+        </div>
+        {keptByPartner.length === 0 ? (
+          <EmptyState
+            title="No kept items yet"
+            hint="When a partner keeps a piece, it shows up here with its purchase amount."
+          />
+        ) : (
+          <div className="divide-y divide-espresso/5">
+            {keptByPartner.map((g) => (
+              <div key={g.name} className="py-3 first:pt-0 last:pb-0">
+                <p className="text-sm text-espresso font-medium mb-1.5">{g.name}</p>
+                <div className="space-y-1.5">
+                  {g.items.map((pc) => (
+                    <div key={pc.id} className="flex items-center justify-between gap-4">
+                      <span className="text-sm text-espresso/70 min-w-0 truncate">
+                        {pc.piece_name}
+                        {pc.color && <span className="text-espresso/40"> · {pc.color}</span>}
+                      </span>
+                      <span className="text-sm font-medium text-espresso shrink-0">
+                        {pc.purchase_amount == null ? '—' : money(pc.purchase_amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Recent activity */}

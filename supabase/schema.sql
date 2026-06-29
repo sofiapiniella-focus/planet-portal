@@ -44,6 +44,7 @@ create table if not exists public.kit_pieces (
   color            text,
   photo_url        text,
   partner_decision text check (partner_decision in ('Keep','Return')),  -- null = undecided
+  purchase_amount  numeric,                                             -- USD a stylist paid for a kept piece; null = unset
   created_at       timestamptz not null default now()
 );
 

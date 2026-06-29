@@ -126,13 +126,19 @@ async function main() {
     console.log(`✓ kits upserted (${kitRows.length})`)
   }
 
-  // 3) KIT PIECES — conflict on id.
+  // 3) KIT PIECES — conflict on id. Normalize purchase_amount so every row
+  //    carries the column (null = unset): keeps the bulk upsert's column set
+  //    consistent and round-trips kept-item sale prices from the JSON.
   {
+    const pieceRows = kit_pieces.map((pc) => ({
+      purchase_amount: null,
+      ...pc,
+    }))
     const { error } = await supabase
       .from('kit_pieces')
-      .upsert(kit_pieces, { onConflict: 'id' })
+      .upsert(pieceRows, { onConflict: 'id' })
     if (error) fail(`kit_pieces upsert failed: ${error.message}`)
-    console.log(`✓ kit_pieces upserted (${kit_pieces.length})`)
+    console.log(`✓ kit_pieces upserted (${pieceRows.length})`)
   }
 
   // ── Verify straight from the DB (authoritative) ─────────────────────
