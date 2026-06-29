@@ -29,11 +29,11 @@
     {
       "id": "a0000000-0000-4000-8000-000000000002",
       "partner_email": "carol@caroldavidson.com",
-      "status": "Delivered",
+      "status": "Returned",
       "ship_date": "2026-06-11",
       "tracking_number": "1Z11JR320318248680",
       "return_by_date": "2026-07-16",
-      "notes": "Confirmed against typed stock transfer TR-00591. FINAL: kept (purchased) the Triple Collar Jacket (Black) + Metallic Mini Seed Stitch sweater (White/Silver); returned the rest (Cropped Asymmetrical Jacket, White Jackie O Top, Mint Big Pocket Pants)."
+      "notes": "Confirmed against typed stock transfer TR-00591. FINAL: kept (purchased) the Triple Collar Jacket (Black) + Metallic Mini Seed Stitch sweater (White/Silver); returned the rest (Cropped Asymmetrical Jacket, White Jackie O Top, Mint Big Pocket Pants). Return received 2026-06-29."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000003",
@@ -60,7 +60,7 @@
       "ship_date": "2026-06-16",
       "tracking_number": "1Z11JR320305506522",
       "return_by_date": "2026-07-19",
-      "notes": "Marcia Crivorot (Stylist). UPS 1Z11JR320305506522. Shipped 2026-06-16, delivered Fri 2026-06-19. Confirmed against typed stock transfer TR-00197. Ships to 12 Rose St, White Plains, NY 10605."
+      "notes": "Marcia Crivorot (Stylist). UPS 1Z11JR320305506522. Shipped 2026-06-16, delivered Fri 2026-06-19. Confirmed against typed stock transfer TR-00197. Ships to 12 Rose St, White Plains, NY 10605. Keeping the Peony Mini Seed Stitch; returning the size 2 gaucho, sending size 1 (green pants)."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000006",
@@ -78,7 +78,7 @@
       "ship_date": "2026-06-16",
       "tracking_number": "1Z11JR320307656983",
       "return_by_date": "2026-07-20",
-      "notes": "Total Image Consultants (Stylist). UPS 1Z11JR320307656983. Shipped 2026-06-16, delivered Sat 2026-06-20. Confirmed against typed stock transfer TR-00198. Feedback: LOVES the groovy striped crewneck + the metallic crochet boatneck (both look and feel great); was surprised she did not love a couple of the others. Matches the picks Sofia emailed her."
+      "notes": "Total Image Consultants (Stylist). UPS 1Z11JR320307656983. Shipped 2026-06-16, delivered Sat 2026-06-20. Confirmed against typed stock transfer TR-00198. Feedback: LOVES the groovy striped crewneck + the metallic crochet boatneck (both look and feel great); was surprised she did not love a couple of the others. Matches the picks Sofia emailed her. Keeping/purchasing the gold boatneck; payment pending."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000008",
@@ -92,11 +92,11 @@
     {
       "id": "a0000000-0000-4000-8000-000000000009",
       "partner_email": "cynthia@theunexpectedsomeone.com",
-      "status": "Shipped",
+      "status": "Delivered",
       "ship_date": "2026-06-24",
       "tracking_number": "1Z11JR320322661868",
       "return_by_date": null,
-      "notes": "FULLY GIFTED, no return (keeps both pieces). For July 19 black-tie wedding. SHIPPED 2026-06-24 via UPS to McLean VA 22102. DELIVERABLE: owes 1 social post; monitor her Instagram."
+      "notes": "FULLY GIFTED, no return (keeps both pieces). For July 19 black-tie wedding. SHIPPED 2026-06-24 via UPS to McLean VA 22102. Delivered 2026-06-27. DELIVERABLE: owes 1 social post; monitor her Instagram."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000010",
@@ -161,8 +161,8 @@
     { "id": "b0000000-0000-4000-8000-000000000405", "kit_id": "a0000000-0000-4000-8000-000000000004", "piece_name": "Tee (035T)", "color": "White [confirm]", "partner_decision": null },
 
     { "id": "b0000000-0000-4000-8000-000000000501", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Cool Hoodie", "color": "Putty", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000000502", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Mini Seed Stitch", "color": "Peony", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000000503", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Crushed Nylon Cropped Gaucho", "color": "Guacamole (size 2)", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000000502", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Mini Seed Stitch", "color": "Peony", "partner_decision": "Keep" },
+    { "id": "b0000000-0000-4000-8000-000000000503", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Crushed Nylon Cropped Gaucho", "color": "Guacamole (size 2)", "partner_decision": "Return" },
 
     { "id": "b0000000-0000-4000-8000-000000000601", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Nylon Chic Bomber", "color": "Sky", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000602", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Nylon Cropped Sailor Jacket", "color": "White", "partner_decision": null },
@@ -170,7 +170,7 @@
     { "id": "b0000000-0000-4000-8000-000000000604", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Organza Jackie O Top", "color": "Mint", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000605", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Pima Cotton Frayed Tank", "color": "White", "partner_decision": null },
 
-    { "id": "b0000000-0000-4000-8000-000000000701", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Cotton Metallic Crochet Boatneck Sweater", "color": "Stone/Gold", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000000701", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Cotton Metallic Crochet Boatneck Sweater", "color": "Stone/Gold", "partner_decision": "Keep" },
     { "id": "b0000000-0000-4000-8000-000000000702", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Pima Cotton Groovy Stripe Crewneck Sweater", "color": "Lava/Chartreuse", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000703", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Pima Cotton Jackie O Top", "color": "Peacock", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000704", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Vegan Leather Bell Bottom Pants", "color": "Black", "partner_decision": null },
