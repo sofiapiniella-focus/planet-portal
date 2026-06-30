@@ -1,262 +1,1769 @@
 {
-  "_note": "Full PLANET Style Collective outreach roster — everyone contacted. Source for the dashboard's 'Everyone Contacted' view and the Pull-report export. NO dates by design. Append new people here as they're reached out to. category ∈ stylist|blogger-influencer|platform-partner|UGC. status ∈ contacted|interested|active|gifted|declined.",
+  "_note": "Full PLANET Style Collective outreach roster — everyone contacted (rebuilt from Sofia's de-duplicated Sent-folder export). Source for the dashboard's 'Everyone Contacted' view and the Pull-report export. NO dates by design. Append new people here as they're reached out to; dedupe by email (case-insensitive). category ∈ stylist|blogger-influencer|platform-partner|UGC. status ∈ contacted|interested|active|gifted|declined|needs-follow-up|no-show|yes-awaiting.",
   "contacted": [
-    { "name": "ShopMy", "business": "", "category": "platform-partner", "status": "active" },
-    { "name": "LTK / rewardStyle", "business": "", "category": "platform-partner", "status": "contacted" },
-    { "name": "Phia", "business": "", "category": "platform-partner", "status": "active" },
-    { "name": "Hue & Stripe", "business": "", "category": "platform-partner", "status": "active" },
-    { "name": "Awin", "business": "", "category": "platform-partner", "status": "declined" },
-    { "name": "Indyx", "business": "", "category": "platform-partner", "status": "contacted" },
-    { "name": "Moda Operandi", "business": "", "category": "platform-partner", "status": "contacted" },
-
-    { "name": "Carol Davidson", "business": "caroldavidson.com", "category": "stylist", "status": "active" },
-    { "name": "Ginger Burr", "business": "Total Image Consultants", "category": "stylist", "status": "active" },
-    { "name": "Robin LaMonte", "business": "Hello I'm 50ish", "category": "blogger-influencer", "status": "active" },
-    { "name": "Marcia Crivorot", "business": "marciacrivorot.com", "category": "stylist", "status": "active" },
-    { "name": "Jodie Filogomo", "business": "J Touch of Style", "category": "blogger-influencer", "status": "active" },
-    { "name": "Mitchell Christian", "business": "House of Possum", "category": "blogger-influencer", "status": "active" },
-    { "name": "Jenny Pancoast", "business": "Jenny Pancoast Styling", "category": "stylist", "status": "active" },
-    { "name": "Cynthia Sitcov", "business": "The Unexpected Someone", "category": "stylist", "status": "gifted" },
-    { "name": "Deborah Sorlie", "business": "deborahsorlie.com", "category": "stylist", "status": "gifted" },
-    { "name": "Megan", "business": "Megan's Lifestyle", "category": "blogger-influencer", "status": "gifted" },
-    { "name": "Debie", "business": "Image Matters SWFL", "category": "stylist", "status": "active" },
-    { "name": "Jan Correll", "business": "Silver is the New Blonde", "category": "blogger-influencer", "status": "active" },
-    { "name": "Barbara", "business": "collection2c (Australia)", "category": "stylist", "status": "declined" },
-    { "name": "Sheree Frede", "business": "The SheShe Show", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Roxanne Carne", "business": "roxannecarne.com", "category": "stylist", "status": "needs-follow-up" },
-    { "name": "Magda", "business": "In Style by Magda", "category": "stylist", "status": "no-show" },
-    { "name": "Hollie", "business": "HD Social Media Solutions", "category": "stylist", "status": "yes-awaiting" },
-    { "name": "Emily Caroline", "business": "Styled by Emily Caroline", "category": "stylist", "status": "active" },
-    { "name": "Cindy Hattersley", "business": "Client kit (contact: Leslie Phelps)", "category": "stylist", "status": "active" },
-    { "name": "Sandi Mele", "business": "The Style Shop", "category": "stylist", "status": "active" },
-    { "name": "Renate", "business": "Fashion Survived Over 55", "category": "blogger-influencer", "status": "interested" },
-    { "name": "Jill", "business": "Silver Lining", "category": "stylist", "status": "interested" },
-    { "name": "Jiwon Kim", "business": "", "category": "stylist", "status": "interested" },
-    { "name": "Bev", "business": "Iris May Style", "category": "stylist", "status": "interested" },
-
-    { "name": "Christine Williamson", "business": "@thebaldgirl", "category": "UGC", "status": "contacted" },
-
-    { "name": "Scarlett", "business": "Scarlett Image", "category": "stylist", "status": "contacted" },
-    { "name": "Kara Allan", "business": "Style by Kara Allan", "category": "stylist", "status": "contacted" },
-    { "name": "Maria", "business": "Styled by Maria", "category": "stylist", "status": "contacted" },
-    { "name": "Mellicia", "business": "Poplin Style Direction", "category": "stylist", "status": "contacted" },
-    { "name": "Nancy Dilts", "business": "Nancy Dilts Wardrobe Consulting", "category": "stylist", "status": "contacted" },
-    { "name": "Katie", "business": "KS Style Consulting, Chicago", "category": "stylist", "status": "contacted" },
-    { "name": "Valerie Dittner", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Laurel Kinney", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Carilyn Eglee", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Gabrielle Teare", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Cindy", "business": "Style with Cindy, AU", "category": "stylist", "status": "contacted" },
-    { "name": "Anne", "business": "Here's Looking at You", "category": "stylist", "status": "contacted" },
-    { "name": "Beth", "business": "Beth Divine Style", "category": "stylist", "status": "contacted" },
-    { "name": "Christine", "business": "The Elise Edit", "category": "stylist", "status": "contacted" },
-    { "name": "Cynthia Kennedy", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Lili Henry", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Grace", "business": "Builtgracefully", "category": "stylist", "status": "contacted" },
-    { "name": "Natalie", "business": "Wardrobe Therapy", "category": "stylist", "status": "contacted" },
-    { "name": "Ashley", "business": "Schafer Image Consulting", "category": "stylist", "status": "contacted" },
-    { "name": "Rachel", "business": "Best Dressed / Nachmias", "category": "stylist", "status": "contacted" },
-    { "name": "Gabi", "business": "Wardrobe Detectives, CA", "category": "stylist", "status": "contacted" },
-    { "name": "Kate", "business": "Colour me Kate, AU", "category": "stylist", "status": "contacted" },
-    { "name": "Karina Taylor", "business": "UK", "category": "stylist", "status": "contacted" },
-    { "name": "Molly", "business": "The Wardrobe Editor", "category": "stylist", "status": "contacted" },
-    { "name": "Gillean", "business": "Locke Management", "category": "stylist", "status": "contacted" },
-
-    { "name": "Shelby", "business": "All Set Style", "category": "stylist", "status": "contacted" },
-    { "name": "Michelle", "business": "Putting It Together, CA", "category": "stylist", "status": "contacted" },
-    { "name": "Rochelle York", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Lila", "business": "Styling Insider", "category": "stylist", "status": "contacted" },
-    { "name": "Jen Smith Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Julia", "business": "Dresscode by Julia", "category": "stylist", "status": "contacted" },
-    { "name": "Jen", "business": "Forever Styled", "category": "stylist", "status": "contacted" },
-    { "name": "Megan Brandle", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Paige Richardson", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Kim", "business": "KR Personal Style", "category": "stylist", "status": "contacted" },
-    { "name": "Tracy", "business": "Cyprow", "category": "stylist", "status": "contacted" },
-    { "name": "Samantha Dowson", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Pam", "business": "An Eye For Detail, NJ", "category": "stylist", "status": "contacted" },
-    { "name": "Phyllis", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Sharon", "business": "ImageDesign Consulting", "category": "stylist", "status": "contacted" },
-    { "name": "Wendy", "business": "Antidote Styles — Darien referral", "category": "stylist", "status": "contacted" },
-
-    { "name": "Constance Rose", "business": "UK", "category": "stylist", "status": "contacted" },
-    { "name": "Penny Bennett", "business": "UK", "category": "stylist", "status": "contacted" },
-    { "name": "Stylist Minimalist", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Lani", "business": "Real Life Style", "category": "stylist", "status": "contacted" },
-    { "name": "Elsa", "business": "Elsab Styling", "category": "stylist", "status": "contacted" },
-    { "name": "Helene", "business": "Wardrobe Nerd", "category": "stylist", "status": "contacted" },
-    { "name": "Sharon", "business": "Visual Curator", "category": "stylist", "status": "contacted" },
-    { "name": "Hina Low Studio", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Lauren", "business": "The Fearless Fashionista", "category": "stylist", "status": "contacted" },
-    { "name": "Claudia Hackman", "business": "AU", "category": "stylist", "status": "contacted" },
-    { "name": "Cindy", "business": "MsBStyling", "category": "stylist", "status": "contacted" },
-    { "name": "Dacy", "business": "Mindful Closet", "category": "stylist", "status": "contacted" },
-    { "name": "Lynda Jean", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Christie", "business": "Fashion Translated", "category": "stylist", "status": "contacted" },
-    { "name": "Deborah", "business": "Fabulous After 40", "category": "stylist", "status": "contacted" },
-    { "name": "Kay Hunter Image", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Emily Elliott Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Angela", "business": "Style Angel", "category": "stylist", "status": "contacted" },
-    { "name": "Lisa Talbot", "business": "UK", "category": "stylist", "status": "contacted" },
-    { "name": "Megan LaRussa", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Jill Swanson", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Michelle", "business": "Capsule Closet Stylist", "category": "stylist", "status": "contacted" },
-    { "name": "Anne", "business": "Color and Image Insight", "category": "stylist", "status": "contacted" },
-    { "name": "Meg Gallagher", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Beth", "business": "Style at a Certain Age", "category": "stylist", "status": "contacted" },
-
-    { "name": "Ashley", "business": "A. Wooten Wardrobe", "category": "stylist", "status": "contacted" },
-    { "name": "Claire Roberts Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Arden Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Catherine Horgan", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Nadine", "business": "Love Marlow", "category": "stylist", "status": "contacted" },
-    { "name": "Victoria Hathaway", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Dana Konick", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Stacey Manning", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Molly Russell", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Katie", "business": "The Ideal Closet", "category": "stylist", "status": "contacted" },
-    { "name": "Amy", "business": "StylFwrd", "category": "stylist", "status": "contacted" },
-    { "name": "Amy", "business": "Styled with Witt", "category": "stylist", "status": "contacted" },
-    { "name": "Carla", "business": "A Creative Cliche", "category": "stylist", "status": "contacted" },
-    { "name": "Theresa", "business": "Refined by Theresa", "category": "stylist", "status": "contacted" },
-    { "name": "Lisa Bisagni", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Kara", "business": "Blocks of Style", "category": "stylist", "status": "contacted" },
-    { "name": "Drea", "business": "LifeStyleByDrea", "category": "stylist", "status": "contacted" },
-    { "name": "Shelley White Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Ellen", "business": "E. Caldwell Style", "category": "stylist", "status": "contacted" },
-    { "name": "Casey Matheny", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Liz", "business": "The New York Stylist", "category": "stylist", "status": "contacted" },
-    { "name": "Elisa", "business": "Turnkey Style", "category": "stylist", "status": "contacted" },
-    { "name": "Janel", "business": "BUILD by Janel", "category": "stylist", "status": "contacted" },
-    { "name": "Katherine", "business": "Capsule Wardrobe Stylist", "category": "stylist", "status": "contacted" },
-    { "name": "Naina Singla", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Michelle", "business": "Story Worthy Styles", "category": "stylist", "status": "contacted" },
-    { "name": "Darcy", "business": "Styled Seattle", "category": "stylist", "status": "contacted" },
-    { "name": "Mallory", "business": "Image Success by Mallory", "category": "stylist", "status": "contacted" },
-    { "name": "Erica Ball Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Charline Zeroual", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Amanda Styles LA", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Elizabeth Kosich Styling", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Emily Burnette Styling", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Jennifer", "business": "A Well Styled Life", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Batul", "business": "BHS Image Consulting", "category": "stylist", "status": "contacted" },
-    { "name": "Angela Howenstein", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Rachel Nicole Styling", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Rachel Dee Style", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Dani", "business": "Live Like You Green It", "category": "stylist", "status": "contacted" },
-
-    { "name": "JoJo", "business": "Method Style", "category": "stylist", "status": "contacted" },
-    { "name": "Nikki", "business": "Scottsdale Style Concierge", "category": "stylist", "status": "contacted" },
-    { "name": "Lauren", "business": "Image by Lauren", "category": "stylist", "status": "contacted" },
-    { "name": "Rachel Vallozzi", "business": "Vallozzi Styling", "category": "stylist", "status": "contacted" },
-    { "name": "Jessica", "business": "CT Style Insight", "category": "stylist", "status": "contacted" },
-    { "name": "Natalie", "business": "Natty Style", "category": "stylist", "status": "contacted" },
-    { "name": "Lauren", "business": "Trousseau Style", "category": "stylist", "status": "contacted" },
-    { "name": "Gina", "business": "GinaTheFashionista", "category": "stylist", "status": "contacted" },
-    { "name": "Neepa", "business": "Accessible Style", "category": "stylist", "status": "contacted" },
-    { "name": "Nev", "business": "Styling Out Loud", "category": "stylist", "status": "contacted" },
-    { "name": "Kyle Alexandra", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Marisa", "business": "Stilista Boston", "category": "stylist", "status": "contacted" },
-    { "name": "Rachel Michael Styling", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Candee", "business": "Styled by Candee", "category": "stylist", "status": "contacted" },
-    { "name": "Alexandra Eve", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Sydnie", "business": "A La Mode Wardrobe Consulting", "category": "stylist", "status": "contacted" },
-    { "name": "Kelley", "business": "Adorned by Kelley", "category": "stylist", "status": "contacted" },
-    { "name": "Raffaella Moda", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Elizabeth", "business": "Wardrobe Therapy", "category": "stylist", "status": "contacted" },
-    { "name": "Nicole", "business": "House of Blair Style", "category": "stylist", "status": "contacted" },
-
-    { "name": "Cara", "business": "Styled by Cara", "category": "stylist", "status": "contacted" },
-    { "name": "Jean & Valerie", "business": "Idiosyncratic Fashionistas", "category": "stylist", "status": "contacted" },
-    { "name": "Mel", "business": "Bag and a Beret", "category": "stylist", "status": "contacted" },
-    { "name": "Paula", "business": "The Joye", "category": "stylist", "status": "contacted" },
-    { "name": "Jenny", "business": "Miura", "category": "stylist", "status": "contacted" },
-    { "name": "Blair", "business": "Be Styled Co.", "category": "stylist", "status": "contacted" },
-    { "name": "Elizabeth", "business": "Edited by Elizabeth", "category": "stylist", "status": "contacted" },
-    { "name": "Alexandra", "business": "Alexandra Styles", "category": "stylist", "status": "contacted" },
-    { "name": "Sonja", "business": "Style by Sonja", "category": "stylist", "status": "contacted" },
-    { "name": "Well Dressed CHS", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Susan Bigsby", "business": "", "category": "stylist", "status": "contacted" },
-    { "name": "Claire", "business": "Club Forty, UK", "category": "stylist", "status": "contacted" },
-    { "name": "Stephanie", "business": "Style Me Stephanie", "category": "stylist", "status": "contacted" },
-
-    { "name": "Susan", "business": "Une Femme", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Beth", "business": "B Jones Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Deborah", "business": "What Would V Wear", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Tania", "business": "50 Is Not Old", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Sasha Simon", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Yvonne", "business": "Vicky's Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Merritt Beck", "business": "The Style Scribe", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Samantha", "business": "Could I Have That", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Sarah Christine", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Desiree", "business": "Beautifully Seaside", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Beth", "business": "Palm Beach Lately", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Vera", "business": "VeryVera", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Sapna", "business": "Lunch With A Girlfriend", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Cassie", "business": "Hi Sugarplum", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Katey McFarlan", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Jo", "business": "Peace Love Glam", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Ashley", "business": "ashleyharg, Austin", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Erin", "business": "Busbee Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Megan", "business": "Honey We're Home", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Kelly", "business": "Kelly in the City", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Melissa", "business": "The Glow Girl Life", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Leslie", "business": "Her Midlife Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Amanda", "business": "The Gray Details", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Karla Reed", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Jess", "business": "J Cathell", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Gen", "business": "Pencil and Paper Co", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Jennifer", "business": "Style Charade", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Tennille", "business": "The Tennille Life", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Beth Chappo", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Grace", "business": "The Stripe", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Lindsey", "business": "Fashion Fix MN", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Ty Alexander", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Yolanda Edwards", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Tamu", "business": "All The Pretty Birds", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Lauren Messiah", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Maria Turkel", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Dorrie", "business": "Senior Style Bible", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Liz", "business": "via Jennifer Powell", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Rita", "business": "Ristyled", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Kathy Friend", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Robin Fisher", "business": "Polished Image & Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Mallory Sills", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Isabella", "business": "Confessions of a Superager", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Kay", "business": "Dressed for My Day", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Nanette", "business": "Sweet Fringe Benefits", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Amanda Sanders", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Dawn", "business": "Fashion Should Be Fun", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Samantha", "business": "By Samantha Dawn", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Cheryl", "business": "Life and Style After 50", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Josephine", "business": "Chic at Any Age", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Larissa", "business": "Aire NY", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Nikol", "business": "Nikol Beauty", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Karian", "business": "Lady K Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Dianne", "business": "Lady Di Creator", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Suebelle", "business": "Palm Beach", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Dana", "business": "Elements of Image", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Rhoda", "business": "Southern Hospitality", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Shelley", "business": "shelleyloves78", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Abby Wood", "business": "", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Sherry Grossi", "business": "via manager Nathan", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Jodi", "business": "50 So What, AU", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Karen", "business": "Style Loving", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "FiFi", "business": "FiFi, AU", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Dawn", "business": "Party Til Dawn Style", "category": "blogger-influencer", "status": "contacted" },
-    { "name": "Marie", "business": "Gift of Style 50s", "category": "blogger-influencer", "status": "contacted" },
-
-    { "name": "Shauna", "business": "Chic Over 50", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Tamika Christy", "business": "", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Susan", "business": "A Great New Look", "category": "stylist", "status": "declined" },
-    { "name": "Camila", "business": "The Look Editor", "category": "stylist", "status": "declined" },
-    { "name": "Janet", "business": "Grateful Gardenia", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Monica", "business": "Awed by Monica", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Suzy", "business": "Empty Nest Blessed", "category": "blogger-influencer", "status": "declined" },
-    { "name": "Jacquelyn", "business": "JGP Styled Me", "category": "stylist", "status": "declined" },
-    { "name": "Jas Chana", "business": "", "category": "stylist", "status": "declined" },
-    { "name": "Yifat Jovani", "business": "", "category": "stylist", "status": "declined" },
-    { "name": "Bridget", "business": "Style Ambition", "category": "stylist", "status": "declined" },
-    { "name": "Hallie", "business": "The Wardrobe Consultant", "category": "stylist", "status": "declined" }
+    {
+      "name": "Carol Davidson",
+      "business": "Carol Davidson",
+      "category": "stylist",
+      "status": "active",
+      "email": "carol@caroldavidson.com"
+    },
+    {
+      "name": "Ginger",
+      "business": "Total Image Consultants",
+      "category": "stylist",
+      "status": "active",
+      "email": "ginger@totalimageconsultants.com"
+    },
+    {
+      "name": "Robin LaMonte",
+      "business": "Hello I'm 50ish",
+      "category": "blogger-influencer",
+      "status": "active",
+      "email": "admin@helloim50ish.com"
+    },
+    {
+      "name": "Marcia Crivorot",
+      "business": "Marcia Crivorot",
+      "category": "stylist",
+      "status": "active",
+      "email": "hello@marciacrivorot.com"
+    },
+    {
+      "name": "Jodie Filogomo",
+      "business": "jtouchofstyle",
+      "category": "blogger-influencer",
+      "status": "active",
+      "email": "jtouchofstyle@gmail.com"
+    },
+    {
+      "name": "Mitchell Christian",
+      "business": "House of Possum",
+      "category": "blogger-influencer",
+      "status": "active",
+      "email": "houseofpossum@gmail.com"
+    },
+    {
+      "name": "Jenny Pancoast",
+      "business": "Jenny Pancoast Styling",
+      "category": "stylist",
+      "status": "active",
+      "email": "jenny.pancoast@gmail.com"
+    },
+    {
+      "name": "Debie",
+      "business": "Image Matters SWFL",
+      "category": "stylist",
+      "status": "active",
+      "email": "debie@imagemattersswfl.com"
+    },
+    {
+      "name": "Jan Correll",
+      "business": "Silver is the New Blonde",
+      "category": "blogger-influencer",
+      "status": "active",
+      "email": "jan@silveristhenewblonde.com"
+    },
+    {
+      "name": "Emily Caroline",
+      "business": "Styled by Emily Caroline",
+      "category": "stylist",
+      "status": "active",
+      "email": "styledbyemilycaroline@gmail.com"
+    },
+    {
+      "name": "Cindy Hattersley",
+      "business": "Client kit (contact: Leslie Phelps)",
+      "category": "blogger-influencer",
+      "status": "active",
+      "email": "lesliehphelps@gmail.com"
+    },
+    {
+      "name": "Sandi Mele",
+      "business": "The Style Shop",
+      "category": "stylist",
+      "status": "active",
+      "email": "hello@sandimele.com"
+    },
+    {
+      "name": "Jonelle Graziosi",
+      "business": "Method Style",
+      "category": "stylist",
+      "status": "active",
+      "email": "method.style.jojo@gmail.com"
+    },
+    {
+      "name": "Hollie",
+      "business": "HD Social Media Solutions",
+      "category": "stylist",
+      "status": "yes-awaiting",
+      "email": "hello@hdsocialmediasolutions.com"
+    },
+    {
+      "name": "Megan",
+      "business": "Megan's Lifestyle",
+      "category": "blogger-influencer",
+      "status": "gifted",
+      "email": "megan@meganslifestyle.com"
+    },
+    {
+      "name": "Deborah Sorlie",
+      "business": "Deborah Sorlie",
+      "category": "stylist",
+      "status": "gifted",
+      "email": "info@deborahsorlie.com"
+    },
+    {
+      "name": "Cynthia Sitcov",
+      "business": "The Unexpected Someone",
+      "category": "blogger-influencer",
+      "status": "gifted",
+      "email": "cynthia@theunexpectedsomeone.com"
+    },
+    {
+      "name": "Roxanne Carne",
+      "business": "Roxanne Carne",
+      "category": "stylist",
+      "status": "needs-follow-up",
+      "email": "roxanne@roxannecarne.com"
+    },
+    {
+      "name": "Magda",
+      "business": "In Style by Magda",
+      "category": "stylist",
+      "status": "no-show",
+      "email": "instylebymagda@gmail.com"
+    },
+    {
+      "name": "Renate",
+      "business": "Fashion Survived Over 55",
+      "category": "blogger-influencer",
+      "status": "interested",
+      "email": "fashionsurvivedover55@gmail.com"
+    },
+    {
+      "name": "Jill",
+      "business": "Silver Lining",
+      "category": "blogger-influencer",
+      "status": "interested",
+      "email": "jillssilverlining66@outlook.com"
+    },
+    {
+      "name": "Jiwon Kim",
+      "business": "Jiwon Kim Style",
+      "category": "blogger-influencer",
+      "status": "interested",
+      "email": "jiwonkimstylefolder@hotmail.com"
+    },
+    {
+      "name": "Bev",
+      "business": "Iris May Style",
+      "category": "stylist",
+      "status": "interested",
+      "email": "theirismaystyle@gmail.com"
+    },
+    {
+      "name": "Michelle Matera",
+      "business": "Story Worthy Styles",
+      "category": "stylist",
+      "status": "interested",
+      "email": "swsbymichelle@gmail.com"
+    },
+    {
+      "name": "Mardi",
+      "business": "Modelling by Mards",
+      "category": "UGC",
+      "status": "interested",
+      "email": "mards@hotmail.com"
+    },
+    {
+      "name": "Christine Williamson",
+      "business": "@thebaldgirl",
+      "category": "UGC",
+      "status": "contacted",
+      "email": "baldgirl@thebaldgirl.com"
+    },
+    {
+      "name": "Barbara",
+      "business": "collection2c",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "collection2c@yahoo.com.au"
+    },
+    {
+      "name": "Sheree Frede",
+      "business": "The SheShe Show",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "sheshe@shesheshow.com"
+    },
+    {
+      "name": "Shauna",
+      "business": "Chic Over 50",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "shauna@chicover50.com"
+    },
+    {
+      "name": "Susan",
+      "business": "A Great New Look",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "susan@agreatnewlook.com"
+    },
+    {
+      "name": "Tamika Christy (via Alicia)",
+      "business": "Stride Social",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "alicia@stride-social.com"
+    },
+    {
+      "name": "Camila",
+      "business": "The Look Editor",
+      "category": "stylist",
+      "status": "declined",
+      "email": "camila@thelookeditor.net"
+    },
+    {
+      "name": "Jacquelyn",
+      "business": "JGP Styled Me",
+      "category": "stylist",
+      "status": "declined",
+      "email": "jgpstyledme@gmail.com"
+    },
+    {
+      "name": "Jas Chana",
+      "business": "Jas Chana",
+      "category": "stylist",
+      "status": "declined",
+      "email": "hello@jaschana.com"
+    },
+    {
+      "name": "Yifat Jovani",
+      "business": "Yifat Jovani",
+      "category": "stylist",
+      "status": "declined",
+      "email": "info@yifatjovani.com"
+    },
+    {
+      "name": "Bridget",
+      "business": "Style Ambition",
+      "category": "stylist",
+      "status": "declined",
+      "email": "style@styleambition.com.au"
+    },
+    {
+      "name": "Monica",
+      "business": "Awed by Monica",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "awedbymonica@gmail.com"
+    },
+    {
+      "name": "Suzy",
+      "business": "Empty Nest Blessed",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "suzy@emptynestblessed.com"
+    },
+    {
+      "name": "Janet",
+      "business": "Grateful Gardenia",
+      "category": "blogger-influencer",
+      "status": "declined",
+      "email": "janet@gratefulgardenia.com"
+    },
+    {
+      "name": "ShopMy",
+      "business": "ShopMy",
+      "category": "platform-partner",
+      "status": "active",
+      "email": "affiliates@shopmy.us"
+    },
+    {
+      "name": "LTK",
+      "business": "LTK / rewardStyle",
+      "category": "platform-partner",
+      "status": "contacted",
+      "email": "networks@rewardstyle.com"
+    },
+    {
+      "name": "Anabelle Ward",
+      "business": "LTK",
+      "category": "platform-partner",
+      "status": "contacted",
+      "email": "anabelle.ward@ltk.com"
+    },
+    {
+      "name": "Phia",
+      "business": "Phia",
+      "category": "platform-partner",
+      "status": "active",
+      "email": "partners@phia.co"
+    },
+    {
+      "name": "Hue & Stripe",
+      "business": "Hue & Stripe (Sierra)",
+      "category": "platform-partner",
+      "status": "active",
+      "email": "sierra@hueandstripe.com"
+    },
+    {
+      "name": "Awin",
+      "business": "Awin",
+      "category": "platform-partner",
+      "status": "declined",
+      "email": "onboarding@awin.com"
+    },
+    {
+      "name": "Indyx",
+      "business": "Indyx",
+      "category": "platform-partner",
+      "status": "contacted",
+      "email": "help@myindyx.com"
+    },
+    {
+      "name": "Moda Operandi",
+      "business": "Moda Operandi",
+      "category": "platform-partner",
+      "status": "contacted",
+      "email": "designers@modaoperandi.com"
+    },
+    {
+      "name": "Karl Lind",
+      "business": "AMDX Solutions",
+      "category": "platform-partner",
+      "status": "contacted",
+      "email": "k.lind@amdxsolutions.com"
+    },
+    {
+      "name": "Nicole",
+      "business": "House of Blair Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "nicole@houseofblairstyle.com"
+    },
+    {
+      "name": "Elizabeth",
+      "business": "Wardrobe Therapy",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "elizabeth@wardrobetherapyllc.com"
+    },
+    {
+      "name": "Raffaella",
+      "business": "Raffaella Moda",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rm@raffaellamoda.com"
+    },
+    {
+      "name": "Kelley",
+      "business": "Adorned by Kelley",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kelley@adornedbykelley.com"
+    },
+    {
+      "name": "Sydnie",
+      "business": "A La Mode Wardrobe Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "sydnie@alamodewc.com"
+    },
+    {
+      "name": "Alexandra",
+      "business": "Alexandra Eve",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "alexandra@alexandraeve.net"
+    },
+    {
+      "name": "Candee",
+      "business": "Styled by Candee",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "clausencandee@gmail.com"
+    },
+    {
+      "name": "Rachel",
+      "business": "Rachel Michael Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rachel@rachelmichael.com"
+    },
+    {
+      "name": "Marisa",
+      "business": "Stilista Boston",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@stilistaboston.com"
+    },
+    {
+      "name": "Kyle",
+      "business": "Kyle Alexandra",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kyle@kylealexandra.com"
+    },
+    {
+      "name": "Nev",
+      "business": "Styling Out Loud",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "nevdipetrillo@gmail.com"
+    },
+    {
+      "name": "Neepa",
+      "business": "Accessible Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@accessiblestyle.net"
+    },
+    {
+      "name": "Gina",
+      "business": "GinaTheFashionista",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "ginalkantor@gmail.com"
+    },
+    {
+      "name": "Lauren",
+      "business": "Trousseau Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lauren@trousseaustyle.com"
+    },
+    {
+      "name": "Natalie",
+      "business": "Natty Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "natalie@nattystyle.com"
+    },
+    {
+      "name": "Jessica",
+      "business": "CT Style Insight",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "jess.miller.jm@gmail.com"
+    },
+    {
+      "name": "Rachel Vallozzi",
+      "business": "Vallozzi Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rachel@rachelvallozzi.com"
+    },
+    {
+      "name": "Lauren",
+      "business": "Image by Lauren",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "schugar@mac.com"
+    },
+    {
+      "name": "Nikki",
+      "business": "Scottsdale Style Concierge",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "nikki@scottsdalestyleconcierge.com"
+    },
+    {
+      "name": "Casey Matheny",
+      "business": "Casey Matheny Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "caseymathenystyle@gmail.com"
+    },
+    {
+      "name": "Ellen",
+      "business": "E. Caldwell Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "ellen@ecaldwellstyle.com"
+    },
+    {
+      "name": "Shelley White",
+      "business": "Shelley White Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "shelley@shelleywhitestyle.com"
+    },
+    {
+      "name": "Drea",
+      "business": "LifeStyleByDrea",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "andrea@lifestylebydrea.co"
+    },
+    {
+      "name": "Kara",
+      "business": "Blocks of Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kara@blocksofstyle.com"
+    },
+    {
+      "name": "Lisa Bisagni",
+      "business": "Lisa Bisagni Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lisabisagni@gmail.com"
+    },
+    {
+      "name": "Theresa",
+      "business": "Refined by Theresa",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@refinedbytheresa.com"
+    },
+    {
+      "name": "Carla",
+      "business": "A Creative Cliche",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "contact@acreativecliche.com"
+    },
+    {
+      "name": "Amy",
+      "business": "Styled with Witt",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "styledwithwitt@gmail.com"
+    },
+    {
+      "name": "Amy",
+      "business": "StylFwrd",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "amy@stylfwrd.com"
+    },
+    {
+      "name": "Katie",
+      "business": "The Ideal Closet",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "katie@theidealcloset.com"
+    },
+    {
+      "name": "Molly Russell",
+      "business": "Molly Russell Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "mr@mollyrussellstyling.com"
+    },
+    {
+      "name": "Stacey Manning",
+      "business": "Stacey Manning Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "stacey@staceymanning.com"
+    },
+    {
+      "name": "Dana Konick",
+      "business": "Dana Konick Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "danakonick@gmail.com"
+    },
+    {
+      "name": "Victoria Hathaway",
+      "business": "Victoria Hathaway Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "vlynhathaway@gmail.com"
+    },
+    {
+      "name": "Nadine",
+      "business": "Love Marlow",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "nadine@lovemarlow.com"
+    },
+    {
+      "name": "Catherine Horgan",
+      "business": "Catherine Horgan",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "catherine.horgan@gmail.com"
+    },
+    {
+      "name": "Arden",
+      "business": "Arden Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "arden@ardenstyle.com"
+    },
+    {
+      "name": "Claire Roberts",
+      "business": "Claire Roberts Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "claire@clairerobertsstyle.com"
+    },
+    {
+      "name": "Ashley",
+      "business": "A. Wooten Wardrobe",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "a.wootenwardrobe@gmail.com"
+    },
+    {
+      "name": "Liz",
+      "business": "The New York Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@thenewyorkstylist.com"
+    },
+    {
+      "name": "Elisa",
+      "business": "Turnkey Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "elisa@turnkeystyle.com"
+    },
+    {
+      "name": "Janel",
+      "business": "BUILD by Janel",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "janel@buildbyjanel.com"
+    },
+    {
+      "name": "Katherine",
+      "business": "Capsule Wardrobe Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "katherine@capsulewardrobestylist.com"
+    },
+    {
+      "name": "Grace",
+      "business": "Builtgracefully",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "grace@builtgracefully.com"
+    },
+    {
+      "name": "Naina Singla",
+      "business": "Naina Singla",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@nainasingla.com"
+    },
+    {
+      "name": "Darcy",
+      "business": "Styled Seattle",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "frontdesk@styledseattle.com"
+    },
+    {
+      "name": "Lauren",
+      "business": "The Fearless Fashionista",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lauren@thefearlessfashionista.com"
+    },
+    {
+      "name": "Mallory",
+      "business": "Image Success by Mallory",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "mallory@mallorysills.com"
+    },
+    {
+      "name": "Katie",
+      "business": "KS Style Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "katie@fashionstylingchicago.com"
+    },
+    {
+      "name": "Erica Ball",
+      "business": "Erica Ball Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "erica@ericaballstyle.com"
+    },
+    {
+      "name": "Charline Zeroual",
+      "business": "Charline Zeroual",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "contact@charlinezeroual.com"
+    },
+    {
+      "name": "Amanda",
+      "business": "Amanda Styles LA",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "amandastylesla@gmail.com"
+    },
+    {
+      "name": "Elizabeth Kosich",
+      "business": "Elizabeth Kosich Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "ek@elizabethkosich.com"
+    },
+    {
+      "name": "Emily Burnette",
+      "business": "Emily Burnette Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "style@emilyburnette.com"
+    },
+    {
+      "name": "Kay Hunter",
+      "business": "Kay Hunter Image",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kay@kayhunterimage.com"
+    },
+    {
+      "name": "Beth",
+      "business": "Style at a Certain Age",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "beth@styleatacertainage.com"
+    },
+    {
+      "name": "Jennifer",
+      "business": "A Well Styled Life",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "jennifer@awellstyledlife.com"
+    },
+    {
+      "name": "Batul",
+      "business": "BHS Image Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@bhsimageconsulting.com"
+    },
+    {
+      "name": "Jill Swanson",
+      "business": "Simply Beautiful Image Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "jill@jillswanson.com"
+    },
+    {
+      "name": "Angela Howenstein",
+      "business": "Angela Howenstein",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@anghow.com"
+    },
+    {
+      "name": "Rachel Nicole",
+      "business": "Rachel Nicole Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "support@rachel-nicole.com"
+    },
+    {
+      "name": "Dacy",
+      "business": "Mindful Closet",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "dacy@mindfulcloset.com"
+    },
+    {
+      "name": "Mellicia",
+      "business": "Poplin Style Direction",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "hello@poplinstyle.com"
+    },
+    {
+      "name": "Rachel Dee",
+      "business": "Rachel Dee Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rachel@racheldee.com"
+    },
+    {
+      "name": "Beth",
+      "business": "Beth Divine Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "beth@bethdivinestyle.com"
+    },
+    {
+      "name": "Scarlett",
+      "business": "Scarlett Image",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "scarlett@scarlettimage.com"
+    },
+    {
+      "name": "Dani",
+      "business": "Live Like You Green It",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "dani@livelikeyougreenit.com"
+    },
+    {
+      "name": "Lauren Messiah",
+      "business": "Lauren Messiah",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@laurenmessiah.com"
+    },
+    {
+      "name": "Susan",
+      "business": "Une Femme",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@unefemme.net"
+    },
+    {
+      "name": "Beth",
+      "business": "B Jones Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "beth@bjonesstyle.com"
+    },
+    {
+      "name": "Deborah",
+      "business": "What Would V Wear",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hello@whatwouldvwear.net"
+    },
+    {
+      "name": "Tania",
+      "business": "50 Is Not Old",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "tania@50isnotold.com"
+    },
+    {
+      "name": "Sasha Simon",
+      "business": "Sasha Simon",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "collaborations@sashasimon.com"
+    },
+    {
+      "name": "Yvonne",
+      "business": "Vicky's Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "partnerships@vickysstyle.com"
+    },
+    {
+      "name": "Merritt Beck",
+      "business": "The Style Scribe",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "partnerships@merrittbeck.com"
+    },
+    {
+      "name": "Samantha",
+      "business": "Could I Have That",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "partnerships@couldihavethat.com"
+    },
+    {
+      "name": "Sarah Christine",
+      "business": "Sarah Christine",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "business@sarahchristine.com"
+    },
+    {
+      "name": "Desiree",
+      "business": "Beautifully Seaside",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "beautifullyseaside@gmail.com"
+    },
+    {
+      "name": "Beth",
+      "business": "Palm Beach Lately",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hello@palmbeachlately.com"
+    },
+    {
+      "name": "Vera",
+      "business": "VeryVera",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "veryvera@gmail.com"
+    },
+    {
+      "name": "Sapna",
+      "business": "Lunch With A Girlfriend",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "lunchwithagirlfriend@gmail.com"
+    },
+    {
+      "name": "Cassie",
+      "business": "Hi Sugarplum",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hisugarplumblog@gmail.com"
+    },
+    {
+      "name": "Katey McFarlan",
+      "business": "Chronicles of Frivolity",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "kateymcfarlan@gmail.com"
+    },
+    {
+      "name": "Jo",
+      "business": "Peace Love Glam",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "jo.peaceloveglam@gmail.com"
+    },
+    {
+      "name": "Ashley",
+      "business": "Ashley Hargrove (Austin)",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "ashleyharg@gmail.com"
+    },
+    {
+      "name": "Erin",
+      "business": "Busbee Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@busbeestyle.com"
+    },
+    {
+      "name": "Megan",
+      "business": "Honey We're Home",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "honeywerehomeblog@gmail.com"
+    },
+    {
+      "name": "Kelly",
+      "business": "Kelly in the City",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "kelly@kellyinthecity.com"
+    },
+    {
+      "name": "Melissa",
+      "business": "The Glow Girl Life",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "melissa@theglowgirllife.com"
+    },
+    {
+      "name": "Leslie",
+      "business": "Her Midlife Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hermidlifestyle@gmail.com"
+    },
+    {
+      "name": "Amanda",
+      "business": "The Gray Details",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "thegraydetails@gmail.com"
+    },
+    {
+      "name": "Karla Reed",
+      "business": "Karla Reed",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "karla.reed@me.com"
+    },
+    {
+      "name": "Jess",
+      "business": "J Cathell",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "jess@jcathell.com"
+    },
+    {
+      "name": "Gen",
+      "business": "Pencil and Paper Co",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hello@pencilandpaperco.com"
+    },
+    {
+      "name": "Jennifer",
+      "business": "Style Charade",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "stylecharade@gmail.com"
+    },
+    {
+      "name": "Tennille",
+      "business": "The Tennille Life",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@thetennillelife.com"
+    },
+    {
+      "name": "Beth Chappo",
+      "business": "Beth Chappo",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "beth@bethchappo.com"
+    },
+    {
+      "name": "Grace",
+      "business": "The Stripe",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "grace@thestripe.com"
+    },
+    {
+      "name": "Lindsey",
+      "business": "Fashion Fix MN",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@fashionfixmn.com"
+    },
+    {
+      "name": "Ty Alexander",
+      "business": "Ty Alexander",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hello@tyalexander.co"
+    },
+    {
+      "name": "Yolanda Edwards",
+      "business": "Yolanda Edwards",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@yolandaedwards.com"
+    },
+    {
+      "name": "Tamu",
+      "business": "All The Pretty Birds",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "hello@alltheprettybirds.com"
+    },
+    {
+      "name": "Maria Turkel",
+      "business": "Maria Turkel",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "maria@mariaturkel.com"
+    },
+    {
+      "name": "Dorrie",
+      "business": "Senior Style Bible",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "jodi.jacobson@gmail.com"
+    },
+    {
+      "name": "Hallie",
+      "business": "The Wardrobe Consultant",
+      "category": "stylist",
+      "status": "declined",
+      "email": "hallie@thewardrobeconsultant.com"
+    },
+    {
+      "name": "Liz",
+      "business": "Jennifer Powell (team)",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "team@jenniferpowell.com"
+    },
+    {
+      "name": "Rita",
+      "business": "Ristyled",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rita@ristyled.com"
+    },
+    {
+      "name": "Emily Elliott",
+      "business": "Emily Elliott Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "emily@emilyelliottstyle.com"
+    },
+    {
+      "name": "Kathy Friend",
+      "business": "Kathy Friend",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kathy@kathyfriend.com"
+    },
+    {
+      "name": "Robin Fisher",
+      "business": "Polished Image & Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "robinfisher@polishedimageandstyle.com"
+    },
+    {
+      "name": "Meg Gallagher",
+      "business": "Meg Gallagher",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "meg@meggallagher.com"
+    },
+    {
+      "name": "Isabella",
+      "business": "Confessions of a Superager",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "it@confessionsofasuperager.com"
+    },
+    {
+      "name": "Elsa",
+      "business": "Elsab Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@elsabstyling.com"
+    },
+    {
+      "name": "Kay",
+      "business": "Dressed for My Day",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "admin@dressedformyday.com"
+    },
+    {
+      "name": "Nanette",
+      "business": "Sweet Fringe Benefits",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "sweetfringebenefits@gmail.com"
+    },
+    {
+      "name": "Amanda Sanders",
+      "business": "Amanda Sanders",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "amanda@amandasanders.com"
+    },
+    {
+      "name": "Dawn",
+      "business": "Fashion Should Be Fun",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "dawn@fashionshouldbefun.com"
+    },
+    {
+      "name": "Samantha Dawn",
+      "business": "By Samantha Dawn",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@bysamanthadawn.com"
+    },
+    {
+      "name": "Cheryl",
+      "business": "Life and Style After 50",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "cheryl@lifeandstyleafter50.com"
+    },
+    {
+      "name": "Josephine",
+      "business": "Chic at Any Age",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "josephine@chicatanyage.com"
+    },
+    {
+      "name": "Larissa",
+      "business": "Aire NY",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "lm@aire-ny.com"
+    },
+    {
+      "name": "Nikol",
+      "business": "Nikol Beauty",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "mgmt@nikolbeauty.com"
+    },
+    {
+      "name": "Karian",
+      "business": "Lady K Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "ladykstyle.info@gmail.com"
+    },
+    {
+      "name": "Dianne",
+      "business": "Lady Di Creator",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "ladydicreator@gmail.com"
+    },
+    {
+      "name": "Suebelle",
+      "business": "Suebelle Palm Beach",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "partnerships@suebellepalmbeach.com"
+    },
+    {
+      "name": "Dana",
+      "business": "Elements of Image",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "dana@elementsofimage.com"
+    },
+    {
+      "name": "Christine",
+      "business": "The Elise Edit",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "christine@theeliseedit.com"
+    },
+    {
+      "name": "Rhoda",
+      "business": "Southern Hospitality",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "rhodasouthernhospitality@yahoo.com"
+    },
+    {
+      "name": "Tamika Christy",
+      "business": "Tamika Christy",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "collabs@tamikachristy.com"
+    },
+    {
+      "name": "Shelley",
+      "business": "Shelley Loves",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "shelleyloves78@gmail.com"
+    },
+    {
+      "name": "Abby Wood",
+      "business": "Abby Wood Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "abby@abbywoodstylist.com"
+    },
+    {
+      "name": "Sherry Grossi",
+      "business": "Sherry Grossi (via Nathan)",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "nathan.pilandd@gmail.com"
+    },
+    {
+      "name": "Jodi",
+      "business": "50 So What",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "editor@50sowhat.com.au"
+    },
+    {
+      "name": "Karen",
+      "business": "Style Loving",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "karensuzanne@styleloving2.com"
+    },
+    {
+      "name": "FiFi",
+      "business": "FiFi",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "fifi@fifi.com.au"
+    },
+    {
+      "name": "Dawn",
+      "business": "Party Til Dawn Style",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "partytildawnstyle@gmail.com"
+    },
+    {
+      "name": "Marie",
+      "business": "Gift of Style 50s",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "giftofstyle50s@hotmail.com"
+    },
+    {
+      "name": "Cara",
+      "business": "Styled by Cara",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "styledbycara@gmail.com"
+    },
+    {
+      "name": "Jean & Valerie",
+      "business": "Idiosyncratic Fashionistas",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "mono.crone@gmail.com"
+    },
+    {
+      "name": "Mel",
+      "business": "Bag and a Beret",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "mizbagg@hotmail.com"
+    },
+    {
+      "name": "Paula",
+      "business": "The Joye",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "media@thejoye.com"
+    },
+    {
+      "name": "Jenny",
+      "business": "Miura",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "jsgarcia@miura.gi"
+    },
+    {
+      "name": "Blair",
+      "business": "Be Styled Co.",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "blair@bestyledco.com"
+    },
+    {
+      "name": "Elizabeth",
+      "business": "Edited by Elizabeth",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "elizabeth@editedbyelizabeth.com"
+    },
+    {
+      "name": "Alexandra",
+      "business": "Alexandra Styles",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "alexandra@alexandrastyles.com"
+    },
+    {
+      "name": "Sonja",
+      "business": "Style by Sonja",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "sonja@stylebysonja.com"
+    },
+    {
+      "name": "Well Dressed CHS",
+      "business": "Well Dressed CHS",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "stylist@welldressedchs.com"
+    },
+    {
+      "name": "Susan Bigsby",
+      "business": "Susan Bigsby",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "susan@susanbigsby.com"
+    },
+    {
+      "name": "Claire",
+      "business": "Club Forty",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "claire@clubforty.co.uk"
+    },
+    {
+      "name": "Stephanie",
+      "business": "Style Me Stephanie",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@stylemestephaniear.com"
+    },
+    {
+      "name": "Maria",
+      "business": "Fashionable Fifties",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "fashionablefifties@gmail.com"
+    },
+    {
+      "name": "Rachel Eden Solomon",
+      "business": "Rachel Eden Solomon",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "racheledensolomon@gmail.com"
+    },
+    {
+      "name": "Shelby",
+      "business": "All Set Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "shelby@allsetstyle.com"
+    },
+    {
+      "name": "Michelle",
+      "business": "Putting It Together",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "michelle@puttingittogether.ca"
+    },
+    {
+      "name": "Rochelle York",
+      "business": "Rochelle York",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@rochelleyork.com"
+    },
+    {
+      "name": "Lila",
+      "business": "Styling Insider",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lila@stylinginsider.com"
+    },
+    {
+      "name": "Jen Smith",
+      "business": "Jen Smith Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "jen@jensmithstyle.com"
+    },
+    {
+      "name": "Julia",
+      "business": "Dresscode by Julia",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "hello@dresscodebyjulia.com"
+    },
+    {
+      "name": "Jen",
+      "business": "Forever Styled",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@foreverstyled.com"
+    },
+    {
+      "name": "Megan Brandle",
+      "business": "Megan Brandle",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "meganrbrandle@gmail.com"
+    },
+    {
+      "name": "Paige Richardson",
+      "business": "Paige Richardson Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "paige@paigerichardsonstyling.com"
+    },
+    {
+      "name": "Kim",
+      "business": "KR Personal Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kim@krpersonalstyle.com"
+    },
+    {
+      "name": "Tracy",
+      "business": "Tracy Cyprow",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "cyprowtracy@gmail.com"
+    },
+    {
+      "name": "Samantha Dowson",
+      "business": "Samantha Dowson",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@samanthadowson.com"
+    },
+    {
+      "name": "Pam",
+      "business": "An Eye For Detail",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "pam@eyefordetailnj.com"
+    },
+    {
+      "name": "Phyllis",
+      "business": "Phyllis Leibowitz",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "phylleib@gmail.com"
+    },
+    {
+      "name": "Sharon",
+      "business": "ImageDesign Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@imagedesignconsulting.com"
+    },
+    {
+      "name": "Wendy",
+      "business": "Antidote Styles",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "wendy@antidotestyles.com"
+    },
+    {
+      "name": "Constance",
+      "business": "by Constance Rose",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "stylist@byconstancerose.uk"
+    },
+    {
+      "name": "Penny",
+      "business": "Penny Bennett Style Consultancy",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@penny-bennett.com"
+    },
+    {
+      "name": "Stylist Minimalist",
+      "business": "Stylist Minimalist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "services@stylistminimalist.com"
+    },
+    {
+      "name": "Lani",
+      "business": "Real Life Style",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@real-life-style.com"
+    },
+    {
+      "name": "Helene",
+      "business": "Wardrobe Nerd",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "yourwardrobenerd@gmail.com"
+    },
+    {
+      "name": "Sharon",
+      "business": "Visual Curator",
+      "category": "stylist",
+      "status": "active",
+      "email": "info@sharonwarten.com"
+    },
+    {
+      "name": "Hina",
+      "business": "Hina Low Studio",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "hello@hinalowstudio.com"
+    },
+    {
+      "name": "Claudia Hackman",
+      "business": "Claudia Hackman",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "claudia@claudiahackman.com.au"
+    },
+    {
+      "name": "Cindy",
+      "business": "MsBStyling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "cindy@msbstyling.com"
+    },
+    {
+      "name": "Lynda Jean",
+      "business": "Lynda Jean",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lynda@lyndajean.com"
+    },
+    {
+      "name": "Christie",
+      "business": "Fashion Translated",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "admin@fashiontranslated.com"
+    },
+    {
+      "name": "Deborah",
+      "business": "Fabulous After 40",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "email": "info@fabulousafter40.com"
+    },
+    {
+      "name": "Angela",
+      "business": "Style Angel",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@styleangel.com"
+    },
+    {
+      "name": "Lisa Talbot",
+      "business": "Lisa Talbot",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@lisatalbot.co.uk"
+    },
+    {
+      "name": "Megan LaRussa",
+      "business": "Megan LaRussa",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "schedule@meganlarussa.com"
+    },
+    {
+      "name": "Michelle",
+      "business": "Capsule Closet Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "michelle@capsuleclosetstylist.com"
+    },
+    {
+      "name": "Anne",
+      "business": "Color and Image Insight",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "anne@colorandimageinsight.com"
+    },
+    {
+      "name": "Gabi",
+      "business": "Wardrobe Detectives",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "gabi@wardrobedetectives.ca"
+    },
+    {
+      "name": "Kate",
+      "business": "Colour me Kate",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kate@colourmekate.com.au"
+    },
+    {
+      "name": "Karina Taylor",
+      "business": "Karina Taylor",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "karina@karinataylor.co.uk"
+    },
+    {
+      "name": "Molly",
+      "business": "The Wardrobe Editor",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "molly@thewardrobeeditor.com"
+    },
+    {
+      "name": "Rachel",
+      "business": "Best Dressed (Rachel Nachmias)",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "rachel@rachelnachmias.com"
+    },
+    {
+      "name": "Ashley",
+      "business": "Schafer Image Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "styledbyschafer@gmail.com"
+    },
+    {
+      "name": "Natalie Chemaine",
+      "business": "Natalie Chemaine Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "ataliechemaine@icloud.com"
+    },
+    {
+      "name": "Lili",
+      "business": "Lili Henry Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "lili@lilihenrystylist.com"
+    },
+    {
+      "name": "Cynthia Kennedy",
+      "business": "Cynthia Kennedy Stylist",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "tact@cynthiakennedystylist.com"
+    },
+    {
+      "name": "Anne",
+      "business": "Here's Looking at You",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "anne@hereslookingatyou.ca"
+    },
+    {
+      "name": "Cindy",
+      "business": "Style with Cindy",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@stylewithcindy.com.au"
+    },
+    {
+      "name": "Gabrielle Teare",
+      "business": "Gabrielle Teare",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "gabrielle@gabrielleteare.com"
+    },
+    {
+      "name": "Carilyn Eglee",
+      "business": "Carilyn Eglee",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@carilyneglee.com"
+    },
+    {
+      "name": "Laurel Kinney",
+      "business": "Laurel Kinney Personal Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "hello@laurelkinney.com"
+    },
+    {
+      "name": "Valerie Dittner",
+      "business": "Valerie Dittner",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "valerie@valeriedittner.com"
+    },
+    {
+      "name": "Nancy Dilts",
+      "business": "Nancy Dilts Wardrobe Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "nancy@nancydilts.com"
+    },
+    {
+      "name": "Maria",
+      "business": "Styled By Maria",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "maria@styledbymaria.com"
+    },
+    {
+      "name": "Kara Allan",
+      "business": "Style by Kara Allan",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "kara@karaallan.com"
+    },
+    {
+      "name": "Gillean",
+      "business": "Locke Management",
+      "category": "stylist",
+      "status": "contacted",
+      "email": "info@lockemanagement.com"
+    }
   ]
 }
