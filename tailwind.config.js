@@ -12,7 +12,16 @@ export default {
       },
       fontFamily: {
         heading: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        body: ['Montserrat', 'system-ui', 'sans-serif'],
+        body: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          '"Segoe UI"',
+          'Roboto',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
       },
       boxShadow: {
         soft: '0 4px 24px rgba(44, 31, 26, 0.06)',

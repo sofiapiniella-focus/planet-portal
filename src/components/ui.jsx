@@ -1,10 +1,14 @@
 // Small shared UI building blocks, all on-brand.
 
-export function Logo({ subtitle = 'Style Collective', className = '' }) {
+export function Logo({ subtitle = 'Style Collective', className = '', invert = false }) {
   return (
     <div className={`text-center ${className}`}>
-      <div className="font-heading text-3xl tracking-[0.2em] text-espresso">PLANET</div>
-      <div className="text-[10px] uppercase tracking-[0.4em] text-gold mt-1">
+      <img
+        src="/planet-wordmark.png"
+        alt="PLANET by Lauren G"
+        className={`mx-auto h-9 w-auto ${invert ? 'logo-invert' : ''}`}
+      />
+      <div className="text-[11px] uppercase tracking-[0.4em] text-gold mt-2.5">
         by Lauren G
       </div>
       {subtitle && (

@@ -123,15 +123,21 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen pb-20">
-      <header className="border-b border-espresso/5 bg-cream/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="font-heading text-xl tracking-[0.2em]">
-            PLANET{' '}
-            <span className="text-gold text-xs tracking-[0.3em]">Internal Dashboard</span>
+      <header className="border-b border-black/20 bg-espresso sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img
+              src="/planet-wordmark.png"
+              alt="PLANET"
+              className="h-6 w-auto logo-invert"
+            />
+            <span className="text-gold text-[10px] uppercase tracking-[0.3em] hidden sm:inline">
+              Internal Dashboard
+            </span>
           </div>
           <button
             onClick={() => signOut().then(() => navigate('/'))}
-            className="btn-ghost text-xs"
+            className="text-xs font-medium tracking-wide text-cream/70 hover:text-cream transition"
           >
             Sign out
           </button>
@@ -178,9 +184,13 @@ export default function AdminDashboard() {
 function Metric({ label, value, sub, accent = 'text-espresso' }) {
   return (
     <div className="card p-5">
-      <p className="text-[11px] uppercase tracking-widest text-espresso/45">{label}</p>
-      <p className={`font-heading text-3xl mt-2 ${accent}`}>{value}</p>
-      {sub ? <p className="text-xs text-espresso/45 mt-1">{sub}</p> : null}
+      <p className="text-[11px] uppercase tracking-widest text-espresso/60 font-medium">
+        {label}
+      </p>
+      <p className={`text-3xl font-semibold tabular-nums tracking-tight mt-2 ${accent}`}>
+        {value}
+      </p>
+      {sub ? <p className="text-xs text-espresso/55 mt-1">{sub}</p> : null}
     </div>
   )
 }
@@ -188,8 +198,8 @@ function Metric({ label, value, sub, accent = 'text-espresso' }) {
 function MiniStat({ label, value }) {
   return (
     <div className="bg-cream rounded-xl px-3 py-2.5 border border-espresso/5">
-      <div className="text-espresso font-medium">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-espresso/40 mt-0.5">
+      <div className="text-espresso font-semibold tabular-nums">{value}</div>
+      <div className="text-[10px] uppercase tracking-widest text-espresso/55 mt-0.5 font-medium">
         {label}
       </div>
     </div>
@@ -445,7 +455,7 @@ function OverviewTab({ partners, kits, pieces, content }) {
             </p>
           </div>
           <div className="text-right">
-            <p className="font-heading text-3xl text-green-700 leading-none">
+            <p className="text-3xl font-semibold tabular-nums tracking-tight text-green-700 leading-none">
               {money(paidTotal)}
             </p>
             <p className="text-[10px] uppercase tracking-widest text-espresso/40 mt-1">

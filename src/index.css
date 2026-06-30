@@ -4,15 +4,30 @@
 
 @layer base {
   html {
+    /* Larger base for readability — all rem-based text scales up with this. */
+    font-size: 17px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-cream text-espresso font-body;
+    line-height: 1.55;
   }
   h1, h2, h3, h4 {
     @apply font-heading;
   }
+  /* Crisp, evenly-spaced digits for all data/numbers in cards and tables. */
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
+
+/* Black PNG wordmark → white, for dark surfaces (the dashboard header). */
+.logo-invert {
+  filter: brightness(0) invert(1);
 }
 
 @layer components {
