@@ -2335,6 +2335,166 @@
       "status": "contacted",
       "channel": "email",
       "email": "lemelostyle@gmail.com"
+    },
+    {
+      "name": "Jes Ruzic",
+      "business": "Jes Ruzic Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "jes@jesruzic.com"
+    },
+    {
+      "name": "Aliya Thomas",
+      "business": "Elevated Style by Aliya",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "info@elevatedstylebyaliya.com"
+    },
+    {
+      "name": "Kemi Ajibare",
+      "business": "StyledByKemi",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@styledbykemi.com"
+    },
+    {
+      "name": "Tera Coughlin",
+      "business": "Tera Coughlin Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "teracoughlin77@gmail.com"
+    },
+    {
+      "name": "Charlene",
+      "business": "Style Chemistry Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@stylechemistryconsulting.com"
+    },
+    {
+      "name": "Sarah Augustine",
+      "business": "A Style Breeze",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "info@astylebreeze.com"
+    },
+    {
+      "name": "Beth",
+      "business": "MKE Style Concierge",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "beth@mkestyleconcierge.com"
+    },
+    {
+      "name": "Ellie Steinbrink",
+      "business": "Style Decoded",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "ellie@elliesteinbrink.com"
+    },
+    {
+      "name": "BJ Wilson",
+      "business": "BJ Wilson & Company",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "bjwilson@bjwilsonandcompany.com"
+    },
+    {
+      "name": "Laura K. Sawyier",
+      "business": "LKS Styling & Consulting",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "laura@lauraksawyier.com"
+    },
+    {
+      "name": "Courtney",
+      "business": "Sur(real) Style with Courtney",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "surrealstylewithcourtney@gmail.com"
+    },
+    {
+      "name": "Jessica Hilde",
+      "business": "Jessica Hilde Style",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "jessicahildestyle@gmail.com"
+    },
+    {
+      "name": "Andrea",
+      "business": "Wardrobe Interventions",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "andrea@wardrobeinterventions.com"
+    },
+    {
+      "name": "Kaki Gaines & Greta Stehr",
+      "business": "By KAKI",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@bykaki.us"
+    },
+    {
+      "name": "Sophisticated Personal Shopper",
+      "business": "Sophisticated Personal Shopper",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "info@sophisticatedps.com"
+    },
+    {
+      "name": "Lydia",
+      "business": "Elizabeth & Lane",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "lydia@elizabethandlane.com"
+    },
+    {
+      "name": "Tracy James",
+      "business": "ChicMadeSimple",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "tracy@chicmadesimple.com"
+    },
+    {
+      "name": "Emmaline Chappell",
+      "business": "Emmaline's Personal Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "emchapbiz@gmail.com"
+    },
+    {
+      "name": "Christina Stallings",
+      "business": "Impressions by Christina",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "impressionsbychristina@gmail.com"
+    },
+    {
+      "name": "Natalie",
+      "business": "STYLE Consultant Group",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "contact@styleconsultantgroup.com"
     }
   ]
 }
