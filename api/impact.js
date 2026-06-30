@@ -2,8 +2,8 @@
 // Vercel Serverless Function: GET /api/impact
 //
 // Returns aggregate Impact.com (Advertiser API) affiliate performance for
-// the admin Overview: total sales, orders, commission, clicks, and the most
-// recent conversions. The Impact credentials never leave the server.
+// the admin Overview: total sales, orders, commission, and the most recent
+// conversions. The Impact credentials never leave the server.
 //
 // Required Vercel env vars (Settings → Environment Variables):
 //   IMPACT_ACCOUNT_SID   (Impact Advertiser account SID — Basic-auth username)
@@ -13,7 +13,7 @@
 // the dashboard shows a tasteful "connect Impact" state instead of an error.
 //
 // Response shape:
-//   { connected, sales, orders, commission, clicks,
+//   { connected, sales, orders, commission,
 //     recentActions: [{ date, partner, amount, status }] }
 // ════════════════════════════════════════════════════════════════════
 
@@ -79,7 +79,6 @@ export default async function handler(req, res) {
   const end = new Date()
   const start = new Date(end.getTime() - 30 * 86400000)
   const stamp = (d) => d.toISOString().slice(0, 19) + 'Z' // YYYY-MM-DDTHH:MM:SSZ
-  const day = (d) => d.toISOString().slice(0, 10) // YYYY-MM-DD
 
   try {
     // ── Conversions (Actions) → sales, orders, commission, recent activity ──
@@ -153,32 +152,15 @@ export default async function handler(req, res) {
         status: a.State || '—',
       }))
 
-    // ── Clicks (best-effort advertiser performance report) ──
-    // Report IDs/columns vary by account; if this isn't available we simply
-    // leave clicks at 0 rather than failing the whole response.
-    let clicks = 0
-    try {
-      const reportUrl =
-        `${IMPACT_BASE}/Advertisers/${sid}/Reports/adv_performance_by_day` +
-        `?START_DATE=${day(start)}&END_DATE=${day(end)}&PageSize=365`
-      const rResp = await fetch(reportUrl, { headers: impactHeaders })
-      if (rResp.ok) {
-        const rData = await rResp.json()
-        const records = rData?.Records || rData?.records || []
-        for (const rec of records) {
-          clicks += num(rec.Clicks ?? rec.clicks ?? rec.CLICKS)
-        }
-      }
-    } catch {
-      /* clicks are best-effort */
-    }
+    // Clicks intentionally omitted: Impact's advertiser performance report
+    // returned a click count that didn't match Impact's own Program Health
+    // dashboard, so we no longer surface it (nor any click-derived metric).
 
     return res.status(200).json({
       connected: true,
       sales,
       orders,
       commission,
-      clicks,
       recentActions,
     })
   } catch (err) {

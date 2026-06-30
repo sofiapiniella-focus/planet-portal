@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 
 // Fetches aggregate Impact.com affiliate performance for the admin Overview
 // from our serverless function, which talks to Impact with the secret keys.
-// Returns { connected, sales, orders, commission, clicks, recentActions }.
+// Returns { connected, sales, orders, commission, recentActions }.
 export async function fetchImpactSummary() {
   const {
     data: { session },

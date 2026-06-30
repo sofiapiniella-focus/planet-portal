@@ -202,7 +202,7 @@ function ConnectImpact({ message }) {
       <p className="font-heading text-lg text-espresso/70">Connect Impact</p>
       <p className="text-sm text-espresso/45 mt-2 leading-relaxed">
         {message ||
-          'Add IMPACT_ACCOUNT_SID and IMPACT_AUTH_TOKEN in Vercel to see live affiliate sales, commission, and clicks.'}
+          'Add IMPACT_ACCOUNT_SID and IMPACT_AUTH_TOKEN in Vercel to see live affiliate sales, orders, and commission.'}
       </p>
     </div>
   )
@@ -321,7 +321,7 @@ function OverviewTab({ partners, kits, pieces, content }) {
           label="Impact commission · 30d"
           value={connected ? money(imp.commission) : '—'}
           accent="text-gold"
-          sub={connected ? `${Number(imp.clicks || 0).toLocaleString()} clicks` : 'Not connected'}
+          sub={connected ? null : 'Not connected'}
         />
       </div>
 
@@ -424,11 +424,10 @@ function OverviewTab({ partners, kits, pieces, content }) {
           ) : !connected ? (
             <ConnectImpact message={imp?.message} />
           ) : (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <MiniStat label="Sales" value={money(imp.sales)} />
               <MiniStat label="Commission" value={money(imp.commission)} />
               <MiniStat label="Orders" value={imp.orders} />
-              <MiniStat label="Clicks" value={Number(imp.clicks || 0).toLocaleString()} />
             </div>
           )}
         </div>
