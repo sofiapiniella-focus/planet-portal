@@ -1,20 +1,20 @@
 {
   "_note": "Source data for scripts/sync_partners.mjs. Mirrors scripts/update_partners.sql exactly (same deterministic UUIDs, statuses, notes, pieces, decisions). Kits reference their partner by partner_email; the sync resolves that to partner_id after upserting partners. Edit this file going forward, then run `npm run sync:partners`.",
   "partners": [
-    { "name": "Mitchell Christian", "email": "houseofpossum@gmail.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Carol Davidson", "email": "carol@caroldavidson.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Robin LaMonte", "email": "admin@helloim50ish.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Jodie Filogomo", "email": "jtouchofstyle@gmail.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Marcia Crivorot", "email": "hello@marciacrivorot.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Jenny Pancoast", "email": "jenny.pancoast@gmail.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Ginger Burr", "email": "ginger@totalimageconsultants.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Jan Correll", "email": "jan@silveristhenewblonde.com", "status": "Active Partner", "platform": "GoAffPro" },
+    { "name": "Mitchell Christian", "email": "houseofpossum@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Carol Davidson", "email": "carol@caroldavidson.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Robin LaMonte", "email": "admin@helloim50ish.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Jodie Filogomo", "email": "jtouchofstyle@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Marcia Crivorot", "email": "hello@marciacrivorot.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Jenny Pancoast", "email": "jenny.pancoast@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Ginger Burr", "email": "ginger@totalimageconsultants.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Jan Correll", "email": "jan@silveristhenewblonde.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
     { "name": "Cynthia Sitcov", "email": "cynthia@theunexpectedsomeone.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": true },
-    { "name": "Cindy Hattersley", "email": "cynthiahattersley@gmail.com", "status": "Active Partner", "platform": "GoAffPro" },
+    { "name": "Cindy Hattersley", "email": "cynthiahattersley@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
     { "name": "Megan Saustad", "email": "megan@meganslifestyle.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": true },
     { "name": "Deborah Sorlie", "email": "info@deborahsorlie.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": true },
-    { "name": "Debie Grass", "email": "debie@imagemattersswfl.com", "status": "Active Partner", "platform": "GoAffPro" },
-    { "name": "Emily Caroline", "email": "styledbyemilycaroline@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "commission_link": "https://shopplanetbylaureng.com/?ref=EMILYCAROLINE" }
+    { "name": "Debie Grass", "email": "debie@imagemattersswfl.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Emily Caroline", "email": "styledbyemilycaroline@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false, "commission_link": "https://shopplanetbylaureng.com/?ref=EMILYCAROLINE" }
   ],
   "kits": [
     {
@@ -38,11 +38,11 @@
     {
       "id": "a0000000-0000-4000-8000-000000000003",
       "partner_email": "admin@helloim50ish.com",
-      "status": "Delivered",
+      "status": "Return Pending",
       "ship_date": "2026-06-11",
       "tracking_number": "1Z11JR320336582454",
       "return_by_date": "2026-07-18",
-      "notes": "Rooms Revamped / Hello I'm 50ish (Content Creator). UPS 1Z11JR320336582454. Shipped 2026-06-11, delivered 2026-06-18. ISSUE: arrived with only 5 of 6 items - the Pima Cotton Tranquility Luxury Boxy Tee was on the stock transfer sheet (TR-00590) but MISSING from the box. Needs apology + the missing tee shipped. Prepaid return label included (RMA #100073). Ships to Park City UT."
+      "notes": "Rooms Revamped / Hello I'm 50ish (Content Creator). UPS 1Z11JR320336582454. Shipped 2026-06-11, delivered 2026-06-18. ISSUE: arrived with only 5 of 6 items - the Pima Cotton Tranquility Luxury Boxy Tee was on the stock transfer sheet (TR-00590) but MISSING from the box. Needs apology + the missing tee shipped. Prepaid return label included (RMA #100073). Ships to Park City UT. RETURN IN TRANSIT: partner shipped the box back 2026-06-30 (on the way back); status set to Return Pending. DAMAGE FLAG: returned box smelled bad - those items may need to be damaged out / written off; flag for damage assessment on arrival."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000004",
