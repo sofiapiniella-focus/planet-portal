@@ -89,6 +89,7 @@ export default async function handler(req, res) {
           url: `https://shopplanetbylaureng.com/products/${p.handle}`,
           variant_id: rep.id,
           color: deriveColor(p, rep),
+          product_type: p.product_type || null, // for catalog search/category
           price: Number.isFinite(price) ? price : Number(rep.price) || 0,
           image,
           available: true,

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useDeferredValue } from 'react'
 import { useParams } from 'react-router-dom'
 import { fetchPartnerByToken, submitSelection, fetchCommissionsByToken } from '../lib/partner'
 import { fetchCatalog } from '../lib/catalog'
@@ -371,6 +371,9 @@ function PickerBody({ token }) {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const [confirmOpen, setConfirmOpen] = useState(false) // note + confirm modal
+  const [query, setQuery] = useState('')
+  // Defer filtering off the keystroke so typing stays smooth over ~900 items.
+  const deferredQuery = useDeferredValue(query)
 
   useEffect(() => {
     let active = true
@@ -425,6 +428,20 @@ function PickerBody({ token }) {
   const showBar =
     !submitted && !catalog.loading && !catalog.error && (catalog.items?.length || 0) > 0
 
+  // Live search over title + color + product type (case-insensitive). Filtering
+  // only affects what's shown — `selected` is keyed by product_id and untouched,
+  // so picks survive being filtered out of view.
+  const q = deferredQuery.trim().toLowerCase()
+  const allItems = catalog.items || []
+  const filtered = q
+    ? allItems.filter(
+        (it) =>
+          (it.title || '').toLowerCase().includes(q) ||
+          (it.color || '').toLowerCase().includes(q) ||
+          (it.product_type || '').toLowerCase().includes(q)
+      )
+    : allItems
+
   if (submitted) {
     return (
       <Card className="text-center">
@@ -466,17 +483,56 @@ function PickerBody({ token }) {
           hint="Check back soon — new pieces are added regularly."
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {catalog.items.map((item) => (
-            <ProductCard
-              key={item.product_id}
-              item={item}
-              isSelected={Boolean(selected[item.product_id])}
-              disabled={atMax && !selected[item.product_id]}
-              onToggle={() => toggle(item)}
+        <>
+          {/* Sticky search — stays reachable while scrolling the grid. */}
+          <div className="sticky top-[60px] z-10 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-cream/95 backdrop-blur">
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-espresso/30 pointer-events-none">
+                ⌕
+              </span>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search pieces…"
+                aria-label="Search pieces"
+                className="input pl-9"
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-espresso/35 hover:text-espresso/70 text-sm"
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-espresso/45 mt-2">
+              {filtered.length} piece{filtered.length === 1 ? '' : 's'}
+              {q && ` matching “${deferredQuery.trim()}”`}
+            </p>
+          </div>
+
+          {filtered.length === 0 ? (
+            <EmptyState
+              title="No pieces match your search"
+              hint="Try a different name, color, or category."
             />
-          ))}
-        </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {filtered.map((item) => (
+                <ProductCard
+                  key={item.product_id}
+                  item={item}
+                  isSelected={Boolean(selected[item.product_id])}
+                  disabled={atMax && !selected[item.product_id]}
+                  onToggle={() => toggle(item)}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {/* Always-visible sticky submit bar (compact — stays reachable while
