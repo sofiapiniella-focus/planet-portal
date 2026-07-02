@@ -14,7 +14,12 @@
     { "name": "Megan Saustad", "email": "megan@meganslifestyle.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": true },
     { "name": "Deborah Sorlie", "email": "info@deborahsorlie.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": true },
     { "name": "Debie Grass", "email": "debie@imagemattersswfl.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
-    { "name": "Emily Caroline", "email": "styledbyemilycaroline@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false, "commission_link": "https://shopplanetbylaureng.com/?ref=EMILYCAROLINE" }
+    { "name": "Emily Caroline", "email": "styledbyemilycaroline@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false, "commission_link": "https://shopplanetbylaureng.com/?ref=EMILYCAROLINE" },
+    { "name": "Michelle Matera", "email": "swsbymichelle@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Jonelle \"Jojo\" Graziosi", "email": "method.style.jojo@gmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Mardi Wysman-Blunt", "email": "mards@hotmail.com", "status": "Active Partner", "platform": "GoAffPro", "gifted": false },
+    { "name": "Edie O'Brien", "email": "edie@ediestyles.com", "status": "Interested", "platform": "GoAffPro", "gifted": false },
+    { "name": "Jessica Hilde", "email": "jessicahildestyle@gmail.com", "status": "Interested", "platform": "GoAffPro", "gifted": false }
   ],
   "kits": [
     {
