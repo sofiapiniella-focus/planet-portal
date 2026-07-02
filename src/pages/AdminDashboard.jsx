@@ -82,19 +82,27 @@ export default function AdminDashboard() {
   const [kits, setKits] = useState([])
   const [pieces, setPieces] = useState([])
   const [content, setContent] = useState([])
+  const [selections, setSelections] = useState([])
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [p, k, pc, c] = await Promise.all([
+    const [p, k, pc, c, sel] = await Promise.all([
       supabase.from('partners').select('*').order('created_at', { ascending: false }),
       supabase.from('kits').select('*').order('created_at', { ascending: false }),
       supabase.from('kit_pieces').select('*').order('created_at', { ascending: true }),
       supabase.from('content_log').select('*').order('post_date', { ascending: false }),
+      supabase
+        .from('partner_selections')
+        .select('*')
+        .order('created_at', { ascending: false }),
     ])
     setPartners(p.data || [])
     setKits(k.data || [])
     setPieces(pc.data || [])
     setContent(c.data || [])
+    // Gracefully tolerate the table not existing yet (before Sofia runs the
+    // migration) — sel.error is set and sel.data is null in that case.
+    setSelections(sel.data || [])
     setLoading(false)
   }, [])
 
@@ -104,9 +112,12 @@ export default function AdminDashboard() {
 
   if (loading) return <FullPageLoader label="Loading dashboard…" />
 
+  const newSelections = selections.filter((s) => s.status === 'new').length
+
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'partners', label: 'Partners' },
+    { id: 'selections', label: 'Selections', badge: newSelections },
     { id: 'outreach', label: 'Everyone Contacted' },
     { id: 'kits', label: 'Kit Tracker' },
     { id: 'content', label: 'Content Tracker' },
@@ -142,13 +153,18 @@ export default function AdminDashboard() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-3 text-sm font-medium tracking-wide -mb-px border-b-2 transition ${
+              className={`px-4 py-3 text-sm font-medium tracking-wide -mb-px border-b-2 transition inline-flex items-center gap-2 ${
                 tab === t.id
                   ? 'border-gold text-espresso'
                   : 'border-transparent text-espresso/45 hover:text-espresso/70'
               }`}
             >
               {t.label}
+              {t.badge > 0 && (
+                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-gold text-white text-[10px] font-bold tabular-nums">
+                  {t.badge}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -157,6 +173,7 @@ export default function AdminDashboard() {
           <OverviewTab partners={partners} kits={kits} pieces={pieces} content={content} />
         )}
         {tab === 'partners' && <PartnersTab partners={partners} onChange={load} />}
+        {tab === 'selections' && <SelectionsTab selections={selections} onChange={load} />}
         {tab === 'outreach' && <OutreachTab />}
         {tab === 'kits' && (
           <KitsTab partners={partners} kits={kits} pieces={pieces} onChange={load} />
@@ -888,6 +905,179 @@ function PartnerModal({ partner, onClose, onSaved }) {
         </div>
       </form>
     </Modal>
+  )
+}
+
+/* ─────────────────────────── Selections ──────────────────────────── */
+
+// Partners' picks from the live catalog. New submissions land here as the
+// admin's notification (count badge on the tab); Sofia marks each reviewed.
+function SelectionsTab({ selections, onChange }) {
+  const [filter, setFilter] = useState('new') // new | reviewed | all
+
+  const counts = {
+    new: selections.filter((s) => s.status === 'new').length,
+    reviewed: selections.filter((s) => s.status === 'reviewed').length,
+    all: selections.length,
+  }
+
+  const rows =
+    filter === 'all' ? selections : selections.filter((s) => s.status === filter)
+
+  const filterTabs = [
+    { id: 'new', label: `Pending (${counts.new})` },
+    { id: 'reviewed', label: `Reviewed (${counts.reviewed})` },
+    { id: 'all', label: `All (${counts.all})` },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-heading text-3xl text-espresso">Partner Selections</h2>
+        <p className="text-sm text-espresso/55 mt-1 max-w-xl">
+          Pieces partners chose from the live collection. New submissions appear here
+          (and flag the tab) so you see them at a glance.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {filterTabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setFilter(t.id)}
+            className={`rounded-full px-4 py-1.5 text-xs font-medium tracking-wide border transition ${
+              filter === t.id
+                ? 'border-gold bg-gold/15 text-espresso'
+                : 'border-espresso/15 text-espresso/55 hover:border-espresso/40'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {rows.length === 0 ? (
+        <EmptyState
+          title={filter === 'new' ? 'No pending selections' : 'Nothing here'}
+          hint={
+            filter === 'new'
+              ? "When a partner submits their picks, they'll show up here."
+              : 'Try a different filter.'
+          }
+        />
+      ) : (
+        <div className="space-y-4">
+          {rows.map((s) => (
+            <SelectionCard key={s.id} selection={s} onChange={onChange} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SelectionCard({ selection, onChange }) {
+  const [busy, setBusy] = useState(false)
+  const items = Array.isArray(selection.items) ? selection.items : []
+
+  const when = selection.created_at
+    ? new Date(selection.created_at).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '—'
+
+  async function setStatus(status) {
+    setBusy(true)
+    await supabase.from('partner_selections').update({ status }).eq('id', selection.id)
+    setBusy(false)
+    onChange()
+  }
+
+  const isNew = selection.status === 'new'
+
+  return (
+    <div
+      className={`card p-5 ${isNew ? 'border-l-4 border-l-gold' : ''}`}
+    >
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h3 className="font-heading text-xl text-espresso">
+              {selection.partner_name || selection.partner_email}
+            </h3>
+            {isNew ? (
+              <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gold/20 text-gold">
+                New
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-green-100 text-green-700">
+                Reviewed
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-espresso/45 mt-0.5">
+            {selection.partner_email} · {when}
+          </p>
+        </div>
+        {isNew ? (
+          <button
+            onClick={() => setStatus('reviewed')}
+            disabled={busy}
+            className="btn-outline text-xs shrink-0"
+          >
+            {busy ? <Spinner /> : 'Mark reviewed'}
+          </button>
+        ) : (
+          <button
+            onClick={() => setStatus('new')}
+            disabled={busy}
+            className="btn-ghost text-xs shrink-0"
+          >
+            {busy ? <Spinner /> : 'Reopen'}
+          </button>
+        )}
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {items.map((it, i) => (
+          <div
+            key={`${it.variant_id || it.product_id}-${i}`}
+            className="rounded-xl border border-espresso/5 bg-white overflow-hidden"
+          >
+            <div className="aspect-[4/5] bg-cream overflow-hidden">
+              {it.image ? (
+                <img
+                  src={it.image}
+                  alt={it.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              ) : null}
+            </div>
+            <div className="p-2">
+              <p className="text-xs font-medium text-espresso leading-tight line-clamp-2">
+                {it.title}
+              </p>
+              {it.color && <p className="text-[11px] text-espresso/45">{it.color}</p>}
+              {it.price != null && (
+                <p className="text-[11px] text-espresso/60 mt-0.5">{money(it.price)}</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {selection.note && (
+        <div className="mt-4 bg-cream rounded-xl px-4 py-3 border border-espresso/5">
+          <p className="label">Note from partner</p>
+          <p className="text-sm text-espresso/75 italic">“{selection.note}”</p>
+        </div>
+      )}
+    </div>
   )
 }
 

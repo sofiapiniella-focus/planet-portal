@@ -6,6 +6,7 @@ import { isSupabaseConfigured } from './lib/supabase'
 import Landing from './pages/Landing'
 import PartnerLogin from './pages/PartnerLogin'
 import PartnerPortal from './pages/PartnerPortal'
+import PartnerCatalog from './pages/PartnerCatalog'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import SetupNotice from './pages/SetupNotice'
@@ -38,6 +39,14 @@ function AppRoutes() {
         element={
           <RequirePartner>
             <PartnerPortal />
+          </RequirePartner>
+        }
+      />
+      <Route
+        path="/catalog"
+        element={
+          <RequirePartner>
+            <PartnerCatalog />
           </RequirePartner>
         }
       />

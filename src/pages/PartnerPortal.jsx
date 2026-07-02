@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyCommissions } from '../lib/goaffpro'
@@ -160,6 +160,9 @@ export default function PartnerPortal() {
           </p>
         </div>
 
+        {/* Browse & choose pieces */}
+        <ChoosePiecesCard />
+
         {/* Commission link + earnings */}
         <div className="grid md:grid-cols-2 gap-6">
           <CommissionLink link={partner.commission_link} />
@@ -173,6 +176,28 @@ export default function PartnerPortal() {
         <NoteSection partner={partner} onSaved={load} />
       </main>
     </div>
+  )
+}
+
+function ChoosePiecesCard() {
+  return (
+    <Card className="bg-espresso text-cream border-espresso">
+      <div className="flex items-center justify-between gap-6 flex-wrap">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">The collection</p>
+          <h2 className="font-heading text-2xl md:text-3xl text-cream mt-1">
+            Choose your pieces
+          </h2>
+          <p className="text-cream/70 text-sm mt-2 max-w-md font-light">
+            Browse everything in stock right now and pick the pieces you'd love. We'll
+            follow up on the details.
+          </p>
+        </div>
+        <Link to="/catalog" className="btn-gold shrink-0">
+          Browse the collection →
+        </Link>
+      </div>
+    </Card>
   )
 }
 

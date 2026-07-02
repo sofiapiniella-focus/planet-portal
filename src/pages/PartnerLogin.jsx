@@ -19,9 +19,43 @@ export default function PartnerLogin() {
     e.preventDefault()
     setError('')
     setSending(true)
+
+    const clean = email.trim()
+
+    // Gate: only known partners may sign in. is_partner_email is a security-
+    // definer RPC (see supabase/partner_selections.sql) that checks the
+    // partners table past RLS, so we can reject non-partners cleanly BEFORE
+    // any magic link is sent or auth user is created.
+    const { data: isPartner, error: gateError } = await supabase.rpc('is_partner_email', {
+      check_email: clean,
+    })
+    if (gateError) {
+      // If the gate RPC isn't installed yet (migration not run), fail OPEN so
+      // real partners aren't locked out — the portal still guards access by
+      // requiring a partners row. Any other error → ask them to retry.
+      const notInstalled =
+        gateError.code === 'PGRST202' ||
+        /function|does not exist|could not find/i.test(gateError.message || '')
+      if (!notInstalled) {
+        setSending(false)
+        setError("We couldn't verify your email right now. Please try again in a moment.")
+        return
+      }
+    } else if (!isPartner) {
+      setSending(false)
+      setError(
+        "We couldn't find a partner account for that email. Reach out to the PLANET team if you think this is a mistake."
+      )
+      return
+    }
+
     const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
+      email: clean,
       options: {
+        // First-time partners won't have an auth user yet, so allow creation.
+        // Access is restricted by the is_partner_email gate above (and the
+        // portal's partners-row check), not by this flag.
+        shouldCreateUser: true,
         emailRedirectTo: `${window.location.origin}/portal`,
       },
     })
