@@ -31,12 +31,26 @@ function formatLongDate(dateStr) {
 export default function PartnerHome() {
   const { token } = useParams()
   const [state, setState] = useState({ loading: true })
+  // Commissions + affiliate link come from the same token-based endpoint;
+  // fetch once here and share with both the link and earnings sections.
+  const [commissions, setCommissions] = useState({ loading: true })
 
   useEffect(() => {
     let active = true
     fetchPartnerByToken(token)
       .then((data) => active && setState({ loading: false, data }))
       .catch((e) => active && setState({ loading: false, error: e.message }))
+    return () => {
+      active = false
+    }
+  }, [token])
+
+  useEffect(() => {
+    let active = true
+    setCommissions({ loading: true })
+    fetchCommissionsByToken(token)
+      .then((d) => active && setCommissions({ loading: false, data: d }))
+      .catch((e) => active && setCommissions({ loading: false, error: e.message }))
     return () => {
       active = false
     }
@@ -89,8 +103,8 @@ export default function PartnerHome() {
 
         {/* 1 + 2: Affiliate link + commissions */}
         <div className="grid md:grid-cols-2 gap-6">
-          <CommissionLink link={partner.commission_link} />
-          <Earnings token={token} />
+          <CommissionLink storedLink={partner.commission_link} commissions={commissions} />
+          <Earnings commissions={commissions} />
         </div>
 
         {/* 3 + 4: adapt to the partner's state */}
@@ -112,8 +126,17 @@ export default function PartnerHome() {
 
 /* ─────────────────────── 1) Affiliate link ───────────────────────── */
 
-function CommissionLink({ link }) {
+function CommissionLink({ storedLink, commissions }) {
   const [copied, setCopied] = useState(false)
+
+  // Prefer the live GoAffPro affiliate link (built from the partner's ref_id
+  // or coupon); fall back to a manually-stored commission_link; else nothing.
+  const affiliate = commissions?.data?.affiliate
+  const link = affiliate?.link || storedLink || null
+  const coupon = affiliate?.coupon || null
+  // Only "loading" if we have no stored link AND the lookup is still running —
+  // otherwise show what we already have immediately.
+  const loading = commissions?.loading && !storedLink
 
   async function copy() {
     if (!link) return
@@ -129,11 +152,21 @@ function CommissionLink({ link }) {
   return (
     <Card>
       <p className="eyebrow">Your affiliate link</p>
-      {link ? (
+      {loading ? (
+        <div className="mt-6 flex items-center gap-3 text-espresso/50 text-sm">
+          <Spinner /> Loading your link…
+        </div>
+      ) : link ? (
         <>
           <div className="mt-3 bg-cream rounded-xl px-4 py-3 text-sm text-espresso break-all border border-espresso/5">
             {link}
           </div>
+          {coupon && (
+            <p className="mt-2 text-xs text-espresso/55">
+              Coupon code:{' '}
+              <span className="font-medium text-espresso tracking-wide">{coupon}</span>
+            </p>
+          )}
           <button onClick={copy} className="btn-gold mt-4 w-full">
             {copied ? '✓ Copied' : 'Copy link'}
           </button>
@@ -149,18 +182,8 @@ function CommissionLink({ link }) {
 
 /* ─────────────────────── 2) Commissions ──────────────────────────── */
 
-function Earnings({ token }) {
-  const [state, setState] = useState({ loading: true })
-
-  useEffect(() => {
-    let active = true
-    fetchCommissionsByToken(token)
-      .then((d) => active && setState({ loading: false, data: d }))
-      .catch((e) => active && setState({ loading: false, error: e.message }))
-    return () => {
-      active = false
-    }
-  }, [token])
+function Earnings({ commissions }) {
+  const state = commissions
 
   return (
     <Card>

@@ -19,6 +19,28 @@
 
 const GOAFFPRO_BASE = 'https://api.goaffpro.com/v1'
 
+// The Shopify storefront that honors affiliate links/coupons. Override with
+// AFFILIATE_STORE_URL in Vercel if the referral domain ever changes.
+const STORE_URL = (process.env.AFFILIATE_STORE_URL || 'https://shopplanetbylaureng.com')
+  .replace(/\/+$/, '')
+
+// Build a partner's shareable referral link from their GoAffPro affiliate
+// object. PLANET's affiliates are coupon-based (no ref_id), so the link is a
+// Shopify /discount/<CODE> URL that auto-applies their code at checkout. We
+// still prefer a ref_id link if one ever exists. Returns { link, coupon } or
+// null when the affiliate has neither.
+function buildAffiliate(me) {
+  const refId = (me?.ref_id || '').toString().trim()
+  const coupon = (me?.coupon?.code || '').toString().trim()
+  if (refId) {
+    return { link: `${STORE_URL}/?ref=${encodeURIComponent(refId)}`, coupon: coupon || null }
+  }
+  if (coupon) {
+    return { link: `${STORE_URL}/discount/${encodeURIComponent(coupon)}`, coupon }
+  }
+  return null
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET')
@@ -108,7 +130,7 @@ export default async function handler(req, res) {
     if (publicToken) affHeaders['x-goaffpro-public-token'] = publicToken
 
     const affResp = await fetch(
-      `${GOAFFPRO_BASE}/admin/affiliates?fields=id,email,balance,unpaid_commissions,paid_commissions,total_commissions,total_sales,orders_count`,
+      `${GOAFFPRO_BASE}/admin/affiliates?fields=id,email,ref_id,coupon,balance,unpaid_commissions,paid_commissions,total_commissions,total_sales,orders_count`,
       { headers: affHeaders }
     )
 
@@ -131,10 +153,11 @@ export default async function handler(req, res) {
       })
     }
 
-    // 4: return only this partner's earnings.
+    // 4: return this partner's earnings + their shareable affiliate link.
     return res.status(200).json({
       configured: true,
       found: true,
+      affiliate: buildAffiliate(me),
       earnings: {
         balance: Number(me.balance || 0),
         unpaid: Number(me.unpaid_commissions || 0),
