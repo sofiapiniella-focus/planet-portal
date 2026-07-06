@@ -90,6 +90,8 @@ npm run dev
    | `GOAFFPRO_PUBLIC_TOKEN` | the public token | **no — server only** |
    | `SUPABASE_URL` | your Supabase URL | **no — server only** |
    | `SUPABASE_ANON_KEY` | anon public key | **no — server only** |
+   | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service_role secret — needed by the **Sync from GoAffPro** button | **no — server only** |
+   | `AFFILIATE_STORE_URL` *(optional)* | override the affiliate storefront URL | **no — server only** |
 
 4. Deploy. Then in Supabase → **Authentication → URL Configuration**, add your Vercel URL (e.g. `https://your-app.vercel.app`) to **Site URL** and **Redirect URLs** so magic links return to your live site.
 

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { Badge, PlatformBadge, Spinner, FullPageLoader, EmptyState, Field } from '../components/ui'
 import { fetchImpactSummary } from '../lib/impact'
+import { syncFromGoAffPro } from '../lib/goaffproSync'
 import contactedRoster from '../../scripts/contacted_data.json'
 import {
   downloadContactedPDF,
@@ -108,6 +109,23 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     load()
+  }, [load])
+
+  // Lightweight auto-sync from GoAffPro on first dashboard open per browser
+  // session. Deduped via sessionStorage so it runs at most once, silent and
+  // non-blocking; only refreshes the list if something actually changed. The
+  // "Sync from GoAffPro" button on the Partners tab is the primary, explicit
+  // trigger — this just keeps things fresh without any action.
+  useEffect(() => {
+    if (sessionStorage.getItem('goaffproAutoSynced')) return
+    sessionStorage.setItem('goaffproAutoSynced', '1')
+    syncFromGoAffPro()
+      .then((r) => {
+        if (r?.ok && (r.added > 0 || r.updated > 0)) load()
+      })
+      .catch(() => {
+        // Non-critical — the manual button surfaces any real error.
+      })
   }, [load])
 
   if (loading) return <FullPageLoader label="Loading dashboard…" />
@@ -631,6 +649,29 @@ function PartnersTab({ partners, onChange }) {
   const [editing, setEditing] = useState(null) // partner object or {} for new
   const [platformFilter, setPlatformFilter] = useState('All') // All | GoAffPro | Impact
   const [giftedFilter, setGiftedFilter] = useState('All') // All | Gifted | Standard
+  const [syncing, setSyncing] = useState(false)
+  const [syncResult, setSyncResult] = useState(null) // { ok, message } | { error }
+
+  async function runSync() {
+    setSyncing(true)
+    setSyncResult(null)
+    try {
+      const r = await syncFromGoAffPro()
+      if (r?.configured === false) {
+        setSyncResult({ error: r.message || 'GoAffPro sync is not configured yet.' })
+      } else {
+        setSyncResult({
+          ok: true,
+          message: `Synced from GoAffPro — ${r.added} added, ${r.updated} updated (${r.affiliates} affiliates).`,
+        })
+        onChange() // refresh the list so new partners appear
+      }
+    } catch (e) {
+      setSyncResult({ error: e.message || 'GoAffPro sync failed.' })
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   const counts = partners.reduce(
     (acc, p) => {
@@ -663,10 +704,40 @@ function PartnersTab({ partners, onChange }) {
         <h2 className="font-heading text-3xl text-espresso">
           Partners <span className="text-espresso/30 text-xl">({filtered.length})</span>
         </h2>
-        <button onClick={() => setEditing({})} className="btn-gold">
-          + Add partner
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={runSync}
+            disabled={syncing}
+            className="btn-ghost text-xs inline-flex items-center gap-2 disabled:opacity-50"
+            title="Pull the full GoAffPro affiliate roster into Partners"
+          >
+            {syncing && <Spinner />}
+            {syncing ? 'Syncing…' : 'Sync from GoAffPro'}
+          </button>
+          <button onClick={() => setEditing({})} className="btn-gold">
+            + Add partner
+          </button>
+        </div>
       </div>
+
+      {syncResult && (
+        <div
+          className={`mb-5 rounded-lg px-4 py-3 text-sm flex items-start justify-between gap-3 ${
+            syncResult.error
+              ? 'bg-red-50 text-red-700 border border-red-100'
+              : 'bg-green-50 text-green-700 border border-green-100'
+          }`}
+        >
+          <span>{syncResult.error || syncResult.message}</span>
+          <button
+            onClick={() => setSyncResult(null)}
+            className="text-current/60 hover:text-current shrink-0"
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="space-y-3 mb-5">
