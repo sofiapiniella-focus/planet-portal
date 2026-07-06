@@ -124,20 +124,20 @@
     {
       "id": "a0000000-0000-4000-8000-000000000010",
       "partner_email": "cynthiahattersley@gmail.com",
-      "status": "Shipped",
+      "status": "Delivered",
       "ship_date": "2026-06-25",
       "tracking_number": "1Z11JR320336767540",
-      "return_by_date": null,
-      "notes": "Confirmed against typed stock transfer TR-00217. Swaps resolved (Double Angle V-Tee + Flooded Pants both in Putty). SHIPPED 2026-06-25 via UPS to 2325 Warm Springs Ln, Templeton CA 93465. Assistant: Leslie."
+      "return_by_date": "2026-07-31",
+      "notes": "Confirmed against typed stock transfer TR-00217. Swaps resolved (Double Angle V-Tee + Flooded Pants both in Putty). SHIPPED 2026-06-25 via UPS to 2325 Warm Springs Ln, Templeton CA 93465. DELIVERED 2026-07-01 — 30-day return window through 2026-07-31. Assistant: Leslie."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000011",
       "partner_email": "megan@meganslifestyle.com",
-      "status": "Preparing",
-      "ship_date": null,
-      "tracking_number": null,
+      "status": "Shipped",
+      "ship_date": "2026-07-06",
+      "tracking_number": "1Z11JR320330796716",
       "return_by_date": null,
-      "notes": "Confirmed picks. Ships to 2941 Fondren Drive, Dallas, TX 75205. SIZING DELAY: Cotton Mini Man Shirt in Cherry only available in Size 2 right now; she wants Size 1, so kit is slightly delayed until Size 1 is back in stock. Gifted stylist collab (keeps 1, returns/buys other 2 at 50%); owes 1 Reel."
+      "notes": "UPS Ground, tracking 1Z11JR320330796716, shipped 2026-07-06. Ship to: Megan Saustad, 2941 Fondren Drive, Dallas, TX 75205-1913. Partial ship — 3rd item (a top) backordered, to follow when in stock. Gifted stylist collab (keeps 1, returns/buys other 2 at 50%); owes 1 Reel."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000012",
@@ -156,6 +156,15 @@
       "tracking_number": "1Z11JR320308137489",
       "return_by_date": "2026-07-25",
       "notes": "Confirmed against typed stock transfer TR-00212. SHIPPED 2026-06-24 via UPS to 4753 Imperial Eagle Drive, Fort Myers FL 33966. Delivered 2026-06-25. Return window through 2026-07-25. Color analyst - cool palette, no warm tones, no black on top. Commission link sent."
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000016",
+      "partner_email": "swsbymichelle@gmail.com",
+      "status": "Shipped",
+      "ship_date": "2026-07-06",
+      "tracking_number": "1Z11JR320315482137",
+      "return_by_date": null,
+      "notes": "UPS Ground, tracking 1Z11JR320315482137, shipped 2026-07-06. Ship to: Michelle Mateva, 3525 W Paul Ave, Tampa, FL 33611-3625. 5 pieces."
     }
   ],
   "kit_pieces": [
@@ -225,11 +234,16 @@
     { "id": "b0000000-0000-4000-8000-000000001303", "kit_id": "a0000000-0000-4000-8000-000000000013", "piece_name": "Pima Cotton Luxury Bateau Tee", "color": "Peony", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000001304", "kit_id": "a0000000-0000-4000-8000-000000000013", "piece_name": "Sateen E-Z Pants", "color": "White", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000001305", "kit_id": "a0000000-0000-4000-8000-000000000013", "piece_name": "Sateen Menz Shirt", "color": "White", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000001101", "kit_id": "a0000000-0000-4000-8000-000000000011", "piece_name": "Vegan Leather Mini Cargo Jacket", "color": "Black", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000001102", "kit_id": "a0000000-0000-4000-8000-000000000011", "piece_name": "Cotton Mini Man Shirt", "color": "Cherry (Size 1 requested)", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000001103", "kit_id": "a0000000-0000-4000-8000-000000000011", "piece_name": "Nylon Big Pocket Pants", "color": "Black (Size 0)", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001101", "kit_id": "a0000000-0000-4000-8000-000000000011", "piece_name": "Vegan Leather Mini Cargo Vest", "color": "Black", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001103", "kit_id": "a0000000-0000-4000-8000-000000000011", "piece_name": "Nylon Big Pocket Pants", "color": "Black", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000001201", "kit_id": "a0000000-0000-4000-8000-000000000012", "piece_name": "Nylon Big Pocket Pants", "color": "Black (Size 1)", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000001202", "kit_id": "a0000000-0000-4000-8000-000000000012", "piece_name": "Cotton Mini Man Shirt", "color": "Lava (Size 1)", "partner_decision": null },
-    { "id": "b0000000-0000-4000-8000-000000001203", "kit_id": "a0000000-0000-4000-8000-000000000012", "piece_name": "Cotton Lycra Ruched Tank Dress", "color": "Titanium (Size 0)", "partner_decision": null }
+    { "id": "b0000000-0000-4000-8000-000000001203", "kit_id": "a0000000-0000-4000-8000-000000000012", "piece_name": "Cotton Lycra Ruched Tank Dress", "color": "Titanium (Size 0)", "partner_decision": null },
+
+    { "id": "b0000000-0000-4000-8000-000000001601", "kit_id": "a0000000-0000-4000-8000-000000000016", "piece_name": "Cotton Balloon Sleeve Shirt", "color": "Haze/Bold Stripe", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001602", "kit_id": "a0000000-0000-4000-8000-000000000016", "piece_name": "Cotton Flood Pants", "color": "Nautical Stripe", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001603", "kit_id": "a0000000-0000-4000-8000-000000000016", "piece_name": "Nylon Big Pocket Pants", "color": "Butter", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001604", "kit_id": "a0000000-0000-4000-8000-000000000016", "piece_name": "Pima Cotton Bateau Cable Knit Top", "color": "White", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000001605", "kit_id": "a0000000-0000-4000-8000-000000000016", "piece_name": "Sateen E-Z Pants", "color": "Putty", "partner_decision": null }
   ]
 }
