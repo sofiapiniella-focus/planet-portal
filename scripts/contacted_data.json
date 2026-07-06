@@ -2863,6 +2863,118 @@
       "status": "contacted",
       "channel": "email",
       "email": "kerrie@kerrieellis.co.uk"
+    },
+    {
+      "name": "Kimberly Schulz",
+      "business": "Kimberly Alexa Color & Style",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@auracolorandstyle.com"
+    },
+    {
+      "name": "Kathryn Griffin",
+      "business": "K Griffin Style",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "info@kgriffinstyle.com"
+    },
+    {
+      "name": "Paige McPartland",
+      "business": "Color Analysis Miami",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "team@coloranalysismiami.com"
+    },
+    {
+      "name": "Audrey Schlorholtz",
+      "business": "Color Match Studio",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "audrey@colormatchstudio.com"
+    },
+    {
+      "name": "Heidi",
+      "business": "Querencia Color",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "heidi@querenciacolor.com"
+    },
+    {
+      "name": "Jill Wylot",
+      "business": "Beauty for All Seasons",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "jnwylot@verizon.net"
+    },
+    {
+      "name": "JoAnne Richmond",
+      "business": "Color Analysis by JoAnne",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "joannemrichmond@gmail.com"
+    },
+    {
+      "name": "Brenda Iris",
+      "business": "Mindful Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@mindful-styling.com"
+    },
+    {
+      "name": "Gabby",
+      "business": "Dress Your Colors",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "dressyourcolors@gmail.com"
+    },
+    {
+      "name": "Lauren Martens",
+      "business": "Lauren Martens Style",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "lauren@laurenmartens.com"
+    },
+    {
+      "name": "Solita",
+      "business": "Style to Impact",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "hello@styletoimpact.com"
+    },
+    {
+      "name": "Dana",
+      "business": "SG Style",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "Dana@SG-Style.com"
+    },
+    {
+      "name": "Meredith Liberty",
+      "business": "Meredith Liberty Styling",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "meredith@meredithliberty.com"
+    },
+    {
+      "name": "Jessica Sturdy",
+      "business": "Styled by JRS",
+      "category": "stylist",
+      "status": "contacted",
+      "channel": "email",
+      "email": "styling@bowsandsequins.com"
     }
   ]
 }
