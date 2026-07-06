@@ -23,6 +23,12 @@ function money(n) {
 
 const PARTNER_STATUSES = ['Contacted', 'Interested', 'Active Partner', 'Passed']
 const KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending', 'Returned']
+
+// A kit is CURRENT (a box physically out with the partner, or being prepped to
+// send) until it comes back. Once it's 'Returned' it's a PREVIOUS box — history,
+// not something in the partner's hands. Everything except 'Returned' is active.
+const ACTIVE_KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending']
+const isActiveKit = (k) => ACTIVE_KIT_STATUSES.includes(k?.status)
 const CONTENT_TYPES = ['Reel', 'Feed Post', 'Story', 'Blog Post']
 const PLATFORMS = ['GoAffPro', 'Impact']
 
@@ -1406,10 +1412,79 @@ function ReturnCountdown({ date }) {
   )
 }
 
-function KitsTab({ partners, kits, pieces, onChange }) {
-  const [editing, setEditing] = useState(null) // { partner, kit }
+// Chips listing a kit's pieces + each piece's Keep/Return decision. Shared by
+// the current and previous box panels (previous renders slightly muted).
+function PieceChips({ pieces, muted = false }) {
+  if (!pieces || pieces.length === 0) return null
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {pieces.map((pc) => (
+        <span
+          key={pc.id}
+          className={`inline-flex items-center gap-2 rounded-full pl-3 pr-2 py-1 text-xs border border-espresso/5 ${
+            muted ? 'bg-cream/60' : 'bg-white'
+          }`}
+        >
+          <span className={muted ? 'text-espresso/70' : 'text-espresso'}>{pc.piece_name}</span>
+          {pc.color && <span className="text-espresso/40">· {pc.color}</span>}
+          {pc.partner_decision && <Badge status={pc.partner_decision} />}
+        </span>
+      ))}
+    </div>
+  )
+}
 
-  const kitByPartner = Object.fromEntries(kits.map((k) => [k.partner_id, k]))
+// The CURRENT box: the active kit a partner has in hand (or being prepped),
+// shown prominently with status, return countdown, and its pieces.
+function CurrentKitPanel({ kit, pieces }) {
+  return (
+    <div className="rounded-2xl bg-cream/60 border border-espresso/5 p-4">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Badge status={kit.status} />
+        {kit.return_by_date && <ReturnCountdown date={kit.return_by_date} />}
+      </div>
+      <div className="flex flex-wrap gap-x-6 gap-y-1 mt-2 text-xs text-espresso/55">
+        <span>Ship: {kit.ship_date || '—'}</span>
+        <span>Tracking: {kit.tracking_number || 'pending'}</span>
+        <span>Return by: {kit.return_by_date || '—'}</span>
+      </div>
+      <PieceChips pieces={pieces} />
+      {kit.notes && <p className="mt-3 text-xs text-espresso/50 italic">{kit.notes}</p>}
+    </div>
+  )
+}
+
+// A PREVIOUS box: a returned kit. Visually recessed so it reads as history —
+// pieces + kept/return decisions preserved for the record.
+function PreviousKitPanel({ kit, pieces, onManage }) {
+  return (
+    <div className="rounded-xl bg-espresso/[0.03] border border-espresso/5 px-4 py-3">
+      <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-espresso/55">
+        <Badge status={kit.status} />
+        {kit.ship_date && <span>Shipped {kit.ship_date}</span>}
+        {kit.tracking_number && <span className="text-espresso/40">{kit.tracking_number}</span>}
+        <button
+          onClick={onManage}
+          className="ml-auto text-espresso/40 hover:text-gold"
+        >
+          Manage
+        </button>
+      </div>
+      <PieceChips pieces={pieces} muted />
+      {kit.notes && <p className="mt-2 text-[11px] text-espresso/45 italic">{kit.notes}</p>}
+    </div>
+  )
+}
+
+function KitsTab({ partners, kits, pieces, onChange }) {
+  const [editing, setEditing] = useState(null) // { partner, kit } — kit null = create new box
+
+  // Group ALL kits per partner (a partner can have several over time), newest
+  // first. `kits` already arrives ordered by created_at desc.
+  const kitsByPartner = kits.reduce((acc, k) => {
+    ;(acc[k.partner_id] = acc[k.partner_id] || []).push(k)
+    return acc
+  }, {})
   const piecesByKit = pieces.reduce((acc, pc) => {
     ;(acc[pc.kit_id] = acc[pc.kit_id] || []).push(pc)
     return acc
@@ -1424,54 +1499,74 @@ function KitsTab({ partners, kits, pieces, onChange }) {
       ) : (
         <div className="space-y-4">
           {partners.map((p) => {
-            const kit = kitByPartner[p.id]
-            const kitPieces = kit ? piecesByKit[kit.id] || [] : []
+            const partnerKits = kitsByPartner[p.id] || []
+            const currentKits = partnerKits.filter(isActiveKit)
+            const previousKits = partnerKits.filter((k) => !isActiveKit(k))
+            const currentKit = currentKits[0] || null // most-recent active box
+            const firstName = p.name.split(' ')[0]
+
             return (
               <div key={p.id} className="card p-5">
+                {/* Header — name + at-a-glance box state */}
                 <div className="flex items-start justify-between flex-wrap gap-3">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-heading text-xl text-espresso">{p.name}</h3>
-                      <PlatformBadge platform={p.platform} />
-                      {kit ? (
-                        <Badge status={kit.status} />
-                      ) : (
-                        <span className="text-xs text-espresso/40">No kit</span>
-                      )}
-                      {kit?.return_by_date && <ReturnCountdown date={kit.return_by_date} />}
-                    </div>
-                    {kit && (
-                      <div className="flex flex-wrap gap-x-6 gap-y-1 mt-2 text-xs text-espresso/55">
-                        <span>Ship: {kit.ship_date || '—'}</span>
-                        <span>Tracking: {kit.tracking_number || '—'}</span>
-                        <span>Return by: {kit.return_by_date || '—'}</span>
-                      </div>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="font-heading text-xl text-espresso">{p.name}</h3>
+                    <PlatformBadge platform={p.platform} />
+                    {currentKit ? (
+                      <Badge status={currentKit.status} />
+                    ) : (
+                      <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium tracking-wide bg-espresso/5 text-espresso/45">
+                        No box currently out
+                      </span>
                     )}
                   </div>
                   <button
-                    onClick={() => setEditing({ partner: p, kit })}
+                    onClick={() => setEditing({ partner: p, kit: currentKit })}
                     className="btn-outline text-xs"
                   >
-                    {kit ? 'Manage kit' : 'Create kit'}
+                    {currentKit
+                      ? 'Manage current box'
+                      : partnerKits.length
+                      ? 'Send new box'
+                      : 'Create kit'}
                   </button>
                 </div>
 
-                {kit && kitPieces.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {kitPieces.map((pc) => (
-                      <span
-                        key={pc.id}
-                        className="inline-flex items-center gap-2 bg-white rounded-full pl-3 pr-2 py-1 text-xs border border-espresso/5"
-                      >
-                        <span className="text-espresso">{pc.piece_name}</span>
-                        {pc.color && <span className="text-espresso/40">· {pc.color}</span>}
-                        {pc.partner_decision && <Badge status={pc.partner_decision} />}
-                      </span>
-                    ))}
+                {/* CURRENT box */}
+                <div className="mt-4">
+                  <p className="text-[11px] uppercase tracking-widest text-espresso/40 mb-2">
+                    Current box
+                  </p>
+                  {currentKits.length > 0 ? (
+                    <div className="space-y-3">
+                      {currentKits.map((k) => (
+                        <CurrentKitPanel key={k.id} kit={k} pieces={piecesByKit[k.id] || []} />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-espresso/45">
+                      No box currently out — nothing with {firstName} right now.
+                    </p>
+                  )}
+                </div>
+
+                {/* PREVIOUS boxes */}
+                {previousKits.length > 0 && (
+                  <div className="mt-5 border-t border-espresso/10 pt-4">
+                    <p className="text-[11px] uppercase tracking-widest text-espresso/40 mb-2">
+                      Previous boxes · {previousKits.length} returned
+                    </p>
+                    <div className="space-y-2">
+                      {previousKits.map((k) => (
+                        <PreviousKitPanel
+                          key={k.id}
+                          kit={k}
+                          pieces={piecesByKit[k.id] || []}
+                          onManage={() => setEditing({ partner: p, kit: k })}
+                        />
+                      ))}
+                    </div>
                   </div>
-                )}
-                {kit && kit.notes && (
-                  <p className="mt-3 text-xs text-espresso/50 italic">{kit.notes}</p>
                 )}
               </div>
             )

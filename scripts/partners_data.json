@@ -52,11 +52,20 @@
     {
       "id": "a0000000-0000-4000-8000-000000000004",
       "partner_email": "jtouchofstyle@gmail.com",
-      "status": "Delivered",
+      "status": "Returned",
       "ship_date": "2026-06-17",
       "tracking_number": "1Z11JR320339406648",
       "return_by_date": "2026-07-18",
-      "notes": "J Touch of Style (Stylist). UPS 1Z11JR320339406648. Shipped 2026-06-17, delivered 2026-06-18 (Sun City AZ). Gave feedback: has worn 3 of the 5 items; asked when to return the box (needs an answer). Dealing with a sick husband, so a little delayed. Pieces from handwritten slip - confirm. ISSUE: posted about PLANET on her blog but did NOT use her commission link, so we can't tell if anyone converted."
+      "notes": "1ST BOX (previous). J Touch of Style (Stylist). UPS 1Z11JR320339406648. Shipped 2026-06-17, delivered 2026-06-18 (Sun City AZ). She sent this first box back — marked Returned. Feedback: had worn 3 of the 5 items. Dealing with a sick husband, so a little delayed. Pieces from handwritten slip - confirm. ISSUE: posted about PLANET on her blog but did NOT use her commission link, so we can't tell if anyone converted. A 2nd box is now on the way to her — see her current box."
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000014",
+      "partner_email": "jtouchofstyle@gmail.com",
+      "status": "Shipped",
+      "ship_date": null,
+      "tracking_number": null,
+      "return_by_date": null,
+      "notes": "2nd box — on the way to her. No tracking number yet (pending) — add it once we have it and live tracking will start. (confirm pieces) — carry over / confirm what's actually in this box."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000005",
@@ -65,7 +74,16 @@
       "ship_date": "2026-06-16",
       "tracking_number": "1Z11JR320305506522",
       "return_by_date": "2026-07-19",
-      "notes": "Marcia Crivorot (Stylist). UPS 1Z11JR320305506522. Shipped 2026-06-16, delivered Fri 2026-06-19. Confirmed against typed stock transfer TR-00197. Ships to 12 Rose St, White Plains, NY 10605. Keeping the Peony Mini Seed Stitch; returning the size 2 gaucho, sending size 1 (green pants). Return received 2026-07-02. First box returned."
+      "notes": "1ST BOX (previous). Marcia Crivorot (Stylist). UPS 1Z11JR320305506522. Shipped 2026-06-16, delivered Fri 2026-06-19. Confirmed against typed stock transfer TR-00197. Ships to 12 Rose St, White Plains, NY 10605. Kept/bought the Peony Mini Seed Stitch; RETURNED the Putty Cool Hoodie and the Size 2 crushed nylon gaucho. Return received 2026-07-02. First box returned. Replacement gaucho (Size 1) going out in a new box — see her current box."
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000015",
+      "partner_email": "hello@marciacrivorot.com",
+      "status": "Preparing",
+      "ship_date": null,
+      "tracking_number": null,
+      "return_by_date": null,
+      "notes": "Replacement pants — new size. Marcia returned the Size 2 crushed nylon gaucho; resending the gaucho in Size 1 (green). Just this one replacement piece in this box. No tracking yet."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000006",
@@ -165,9 +183,11 @@
     { "id": "b0000000-0000-4000-8000-000000000404", "kit_id": "a0000000-0000-4000-8000-000000000004", "piece_name": "Knit Sweater (292K)", "color": "White/Midnight [confirm]", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000405", "kit_id": "a0000000-0000-4000-8000-000000000004", "piece_name": "Tee (035T)", "color": "White [confirm]", "partner_decision": null },
 
-    { "id": "b0000000-0000-4000-8000-000000000501", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Cool Hoodie", "color": "Putty", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000000501", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Cool Hoodie", "color": "Putty", "partner_decision": "Return" },
     { "id": "b0000000-0000-4000-8000-000000000502", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Pima Cotton Mini Seed Stitch", "color": "Peony", "partner_decision": "Keep", "purchase_amount": 138, "purchase_status": "paid" },
     { "id": "b0000000-0000-4000-8000-000000000503", "kit_id": "a0000000-0000-4000-8000-000000000005", "piece_name": "Crushed Nylon Cropped Gaucho", "color": "Guacamole (size 2)", "partner_decision": "Return" },
+
+    { "id": "b0000000-0000-4000-8000-000000001501", "kit_id": "a0000000-0000-4000-8000-000000000015", "piece_name": "Crushed Nylon Cropped Gaucho", "color": "Guacamole (Size 1 — replacement)", "partner_decision": null },
 
     { "id": "b0000000-0000-4000-8000-000000000601", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Nylon Chic Bomber", "color": "Sky", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000602", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Nylon Cropped Sailor Jacket", "color": "White", "partner_decision": null },
