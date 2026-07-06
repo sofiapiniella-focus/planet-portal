@@ -1454,9 +1454,9 @@ function CurrentKitPanel({ kit, pieces }) {
   )
 }
 
-// A PREVIOUS box: a returned kit. Visually recessed so it reads as history —
-// pieces + kept/return decisions preserved for the record.
-function PreviousKitPanel({ kit, pieces, onManage }) {
+// A PREVIOUS box: a returned kit. A clean one-line history entry — no pieces,
+// no countdown. Pieces belong only to the current box.
+function PreviousKitPanel({ kit, onManage }) {
   return (
     <div className="rounded-xl bg-espresso/[0.03] border border-espresso/5 px-4 py-3">
       <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-espresso/55">
@@ -1470,7 +1470,6 @@ function PreviousKitPanel({ kit, pieces, onManage }) {
           Manage
         </button>
       </div>
-      <PieceChips pieces={pieces} muted />
       {kit.notes && <p className="mt-2 text-[11px] text-espresso/45 italic">{kit.notes}</p>}
     </div>
   )
@@ -1561,7 +1560,6 @@ function KitsTab({ partners, kits, pieces, onChange }) {
                         <PreviousKitPanel
                           key={k.id}
                           kit={k}
-                          pieces={piecesByKit[k.id] || []}
                           onManage={() => setEditing({ partner: p, kit: k })}
                         />
                       ))}
