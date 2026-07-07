@@ -2975,6 +2975,69 @@
       "status": "contacted",
       "channel": "email",
       "email": "styling@bowsandsequins.com"
+    },
+    {
+      "name": "Julia Berolzheimer",
+      "business": "Julia Berolzheimer",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "business@juliaberolzheimer.com",
+      "instagram": "@juliaberolzheimer"
+    },
+    {
+      "name": "Stacie Flinner",
+      "business": "Stacie Flinner",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "stacie@stacieflinner.com",
+      "instagram": "@stacieflinner"
+    },
+    {
+      "name": "Living with Landyn",
+      "business": "Living with Landyn",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "heylandyn@livingwithlandyn.com",
+      "instagram": "@livingwithlandyn"
+    },
+    {
+      "name": "The Mom Edit",
+      "business": "The Mom Edit",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "hello@themomedit.com",
+      "instagram": "@themomedit"
+    },
+    {
+      "name": "Carly A. Riordan",
+      "business": "Carly A. Riordan",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "carly@carlyriordan.com",
+      "instagram": "@carly"
+    },
+    {
+      "name": "Annie Culbertson",
+      "business": "Annie Culbertson",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "anniebculbertson@gmail.com",
+      "instagram": "@annieculbertson"
+    },
+    {
+      "name": "Caroline",
+      "business": "Little White Looks",
+      "category": "blogger-influencer",
+      "status": "contacted",
+      "channel": "ShopMy",
+      "email": "partnerships@littlewhitelooks.com",
+      "instagram": "@littlewhitelooks"
     }
   ]
 }
