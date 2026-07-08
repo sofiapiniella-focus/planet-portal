@@ -110,7 +110,7 @@
       "status": "Delivered",
       "ship_date": "2026-06-19",
       "tracking_number": "1Z11JR320338632888",
-      "return_by_date": null,
+      "return_by_date": "2026-07-23",
       "notes": "Silver is the New Blonde (Content Creator). UPS 1Z11JR320338632888. Shipped 2026-06-19. Delivered 2026-06-23 (confirmed via UPS). Confirmed against typed stock transfer TR-00201. Ships to 22 Misty Cove II, Hilton Head SC 29928."
     },
     {
@@ -161,11 +161,11 @@
     {
       "id": "a0000000-0000-4000-8000-000000000016",
       "partner_email": "swsbymichelle@gmail.com",
-      "status": "Shipped",
+      "status": "Delivered",
       "ship_date": "2026-07-06",
       "tracking_number": "1Z11JR320315482137",
-      "return_by_date": null,
-      "notes": "UPS Ground, tracking 1Z11JR320315482137, shipped 2026-07-06. Ship to: Michelle Mateva, 3525 W Paul Ave, Tampa, FL 33611-3625. 5 pieces."
+      "return_by_date": "2026-08-06",
+      "notes": "UPS Ground, tracking 1Z11JR320315482137, shipped 2026-07-06. Ship to: Michelle Matera, 3525 W Paul Ave, Tampa, FL 33611-3625. 5 pieces. DELIVERED 2026-07-07 — 30-day return window through 2026-08-06."
     },
     {
       "id": "a0000000-0000-4000-8000-000000000017",
