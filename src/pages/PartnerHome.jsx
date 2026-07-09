@@ -6,7 +6,7 @@ import { Logo, Card, Badge, Spinner, FullPageLoader, EmptyState } from '../compo
 
 // Max pieces a partner may select in one submission. Change this single
 // constant to raise/lower the cap everywhere.
-const MAX_SELECTIONS = 5
+const MAX_SELECTIONS = 3
 
 // Kit statuses that mean "a box is already out with this partner" — when true
 // we lead with kit status/tracking and make the picker secondary.
@@ -474,6 +474,28 @@ function PickerBody({ token }) {
           Thank you — the PLANET team has been notified and will follow up with you shortly
           about your {selectedCount} piece{selectedCount === 1 ? '' : 's'}.
         </p>
+
+        {/* Two gentle asks once the box lands — warm, on-brand, low-pressure. */}
+        <div className="mt-6 text-left max-w-md mx-auto space-y-3">
+          <p className="eyebrow text-center">When your box arrives</p>
+          <div className="flex items-start gap-3 bg-cream rounded-xl px-4 py-3 border border-espresso/5">
+            <span className="text-gold text-lg leading-none mt-0.5">✦</span>
+            <p className="text-sm text-espresso/70 leading-relaxed">
+              Share the love — post your box on social and tag{' '}
+              <span className="font-medium text-espresso">@planetbylaureng</span> so we can
+              celebrate your style with you.
+            </p>
+          </div>
+          <div className="flex items-start gap-3 bg-cream rounded-xl px-4 py-3 border border-espresso/5">
+            <span className="text-gold text-lg leading-none mt-0.5">★</span>
+            <p className="text-sm text-espresso/70 leading-relaxed">
+              Fell in love with a piece? Please leave a{' '}
+              <span className="font-medium text-espresso">5-star review</span> on the website
+              for the pieces you receive — it means the world and helps others find them too.
+            </p>
+          </div>
+        </div>
+
         <button
           onClick={() => {
             setSubmitted(false)
@@ -481,7 +503,7 @@ function PickerBody({ token }) {
             setNote('')
             setShip(EMPTY_SHIPPING)
           }}
-          className="btn-ghost text-xs mt-5 mx-auto"
+          className="btn-ghost text-xs mt-6 mx-auto"
         >
           Choose more
         </button>
