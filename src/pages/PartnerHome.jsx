@@ -36,6 +36,58 @@ function formatLongDate(dateStr) {
   })
 }
 
+// Whole days from today (midnight-to-midnight) until a YYYY-MM-DD date.
+// Positive = still ahead, 0 = today, negative = past due. Returns null on
+// a missing/malformed date.
+function daysUntil(dateStr) {
+  if (!dateStr) return null
+  const [y, m, d] = String(dateStr).split('-').map(Number)
+  if (!y || !m || !d) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const target = new Date(y, m - 1, d)
+  target.setHours(0, 0, 0, 0)
+  return Math.round((target - today) / 86400000)
+}
+
+// Partner-facing return countdown. On-brand pill that greets a comfortable
+// window calmly (gold), warms to amber as the deadline nears, and turns red
+// for due-today / overdue. Renders nothing without a valid return date.
+function ReturnCountdown({ date }) {
+  const left = daysUntil(date)
+  if (left === null) return null
+
+  let tone, label
+  if (left < 0) {
+    const n = Math.abs(left)
+    tone = 'bg-red-50 text-red-700 border-red-200'
+    label = `Return overdue by ${n} ${n === 1 ? 'day' : 'days'}`
+  } else if (left === 0) {
+    tone = 'bg-red-50 text-red-700 border-red-200'
+    label = 'Due today'
+  } else {
+    const noun = left === 1 ? 'day' : 'days'
+    if (left <= 5) {
+      tone = 'bg-red-50 text-red-700 border-red-200'
+    } else if (left <= 10) {
+      tone = 'bg-amber-50 text-amber-700 border-amber-200'
+    } else {
+      tone = 'bg-gold/10 text-gold border-gold/20'
+    }
+    label = `${left} ${noun} left to return`
+  }
+
+  return (
+    <span
+      title={`Return by ${formatLongDate(date)}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium tracking-wide ${tone}`}
+    >
+      <span aria-hidden="true">⏱</span>
+      {label}
+    </span>
+  )
+}
+
 export default function PartnerHome() {
   const { token } = useParams()
   const [state, setState] = useState({ loading: true })
@@ -271,6 +323,11 @@ function KitSection({ kit, pieces, collapsedTitle = false }) {
         <p className="text-sm text-espresso/60 mt-1">
           Please return by: <span className="text-espresso font-medium">{returnBy}</span>
         </p>
+      )}
+      {kit.return_by_date && (
+        <div className="mt-3">
+          <ReturnCountdown date={kit.return_by_date} />
+        </div>
       )}
 
       <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
