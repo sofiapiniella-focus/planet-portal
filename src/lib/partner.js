@@ -26,6 +26,24 @@ export async function submitSelection(token, items, note, shipping) {
   return data
 }
 
+// Submits the partner's STYLE QUIZ answers. Reuses the same token-validated
+// submit_partner_selection RPC (no schema change needed): the tagged
+// `preferences` object — { kind:'style_quiz', vibes, colors, fabrics,
+// silhouettes, occasions, sizes, avoid } — rides in the `items` jsonb column
+// as a single-element array, so old product-pick rows and new quiz rows coexist
+// and the admin dashboard tells them apart by `items[0].kind`. `note` is the
+// partner's optional free-text message; `shipping` is the ship-to address.
+export async function submitQuiz(token, preferences, note, shipping) {
+  const { data, error } = await supabase.rpc('submit_partner_selection', {
+    p_token: token,
+    p_items: [preferences],
+    p_note: note || null,
+    p_shipping: shipping || null,
+  })
+  if (error) throw new Error(error.message)
+  return data
+}
+
 // Fetches this partner's commission summary from the serverless function,
 // identified by their token (the GoAffPro admin token stays server-side).
 // Returns { configured, found, message, earnings? } — same shape the old

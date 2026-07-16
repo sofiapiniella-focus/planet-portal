@@ -148,6 +148,7 @@ export default function AdminDashboard() {
     { id: 'stats', label: 'Stats' },
     { id: 'social', label: 'Social' },
     { id: 'partners', label: 'Partners' },
+    { id: 'referrals', label: 'Referrals' },
     { id: 'selections', label: 'Selections', badge: newSelections },
     { id: 'outreach', label: 'Everyone Contacted' },
     { id: 'kits', label: 'Kit Tracker' },
@@ -208,6 +209,7 @@ export default function AdminDashboard() {
         {tab === 'stats' && <StatsTab />}
         {tab === 'social' && <SocialTab />}
         {tab === 'partners' && <PartnersTab partners={partners} onChange={load} />}
+        {tab === 'referrals' && <ReferralsTab partners={partners} />}
         {tab === 'selections' && <SelectionsTab selections={selections} onChange={load} />}
         {tab === 'outreach' && <OutreachTab />}
         {tab === 'kits' && (
@@ -954,6 +956,7 @@ function PartnersTab({ partners, onChange }) {
       {editing && (
         <PartnerModal
           partner={editing}
+          allPartners={partners}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null)
@@ -965,7 +968,7 @@ function PartnersTab({ partners, onChange }) {
   )
 }
 
-function PartnerModal({ partner, onClose, onSaved }) {
+function PartnerModal({ partner, allPartners = [], onClose, onSaved }) {
   const isNew = !partner.id
   const [form, setForm] = useState({
     name: partner.name || '',
@@ -975,6 +978,7 @@ function PartnerModal({ partner, onClose, onSaved }) {
     platform: partner.platform || 'GoAffPro',
     commission_link: partner.commission_link || '',
     gifted: isGifted(partner),
+    referred_by: partner.referred_by || '',
   })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -983,24 +987,47 @@ function PartnerModal({ partner, onClose, onSaved }) {
     setForm((f) => ({ ...f, [k]: v }))
   }
 
+  // Everyone this partner could have been referred by — any other partner.
+  const referrerOptions = allPartners
+    .filter((p) => p.id !== partner.id)
+    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+
   async function save(e) {
     e.preventDefault()
     setBusy(true)
     setError('')
-    // Keep `gifted` out of the core payload and persist it separately so a
-    // not-yet-migrated `gifted` column (run scripts/add_gifted_column.sql)
-    // never blocks saving the rest of a partner's details.
-    const { gifted, ...core } = form
+    // Keep `gifted` and `referred_by` out of the core payload and persist them
+    // separately so a not-yet-migrated column (run scripts/add_gifted_column.sql /
+    // supabase/referrals.sql) never blocks saving the rest of a partner's details.
+    const { gifted, referred_by, ...core } = form
     const payload = { ...core, email: core.email.trim().toLowerCase() }
-    const { error } = isNew
-      ? await supabase.from('partners').insert({ ...payload, gifted })
+    let saved = isNew
+      ? await supabase.from('partners').insert({ ...payload, gifted }).select('id').single()
       : await supabase.from('partners').update(payload).eq('id', partner.id)
+    const { error } = saved
+    const partnerId = isNew ? saved.data?.id : partner.id
     if (!error && !isNew && gifted !== Boolean(partner.gifted)) {
       const g = await supabase.from('partners').update({ gifted }).eq('id', partner.id)
       if (g.error) {
         setBusy(false)
         setError(
           `Details saved, but the Gifted flag didn't stick — run scripts/add_gifted_column.sql in the Supabase SQL Editor first. (${g.error.message})`
+        )
+        return
+      }
+    }
+    // Referred-by tag — persisted separately, tolerant of the column not yet
+    // existing. Only writes when it changed (or on a new partner that has one).
+    const nextRef = referred_by || null
+    if (!error && partnerId && nextRef !== (partner.referred_by || null)) {
+      const r = await supabase
+        .from('partners')
+        .update({ referred_by: nextRef })
+        .eq('id', partnerId)
+      if (r.error) {
+        setBusy(false)
+        setError(
+          `Details saved, but the "Referred by" tag didn't stick — run supabase/referrals.sql in the Supabase SQL Editor first. (${r.error.message})`
         )
         return
       }
@@ -1091,6 +1118,25 @@ function PartnerModal({ partner, onClose, onSaved }) {
           </span>
         </label>
 
+        <Field label="Referred by">
+          <select
+            className="input"
+            value={form.referred_by}
+            onChange={(e) => set('referred_by', e.target.value)}
+          >
+            <option value="">— Not referred —</option>
+            {referrerOptions.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          <span className="block text-xs text-espresso/45 mt-1">
+            The partner who referred this one. When this partner logs a sale, a
+            referral credit is flagged for the referrer (Referrals tab).
+          </span>
+        </Field>
+
         {!isNew && (
           <div className="bg-white rounded-xl p-3 border border-espresso/5">
             <div className="flex items-center justify-between gap-3">
@@ -1139,6 +1185,476 @@ function PartnerModal({ partner, onClose, onSaved }) {
   )
 }
 
+/* ─────────────────────────── Referrals ──────────────────────────── */
+
+// Referral program: tag a partner as "referred by" another (on the Partners tab),
+// then when the referred partner logs a sale here, a credit owed to the referrer
+// is flagged automatically (DB trigger flag_referral_credit on public.sales).
+// This tab is where sales get logged, credits are reviewed/marked paid, and the
+// default credit amount is set. Everything is admin-only and loads its own data
+// so the rest of the dashboard is unaffected until supabase/referrals.sql is run.
+function ReferralsTab({ partners }) {
+  const [loading, setLoading] = useState(true)
+  const [notMigrated, setNotMigrated] = useState(false)
+  const [credits, setCredits] = useState([])
+  const [sales, setSales] = useState([])
+  const [defaultAmount, setDefaultAmount] = useState('0')
+
+  const partnerName = useCallback(
+    (id) => partners.find((p) => p.id === id)?.name || 'Unknown partner',
+    [partners]
+  )
+  // Partners that have a referrer set — the ones whose sales generate credits.
+  const referredPartners = useMemo(
+    () => partners.filter((p) => p.referred_by),
+    [partners]
+  )
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    const [c, s, setting] = await Promise.all([
+      supabase
+        .from('referral_credits')
+        .select('*')
+        .order('created_at', { ascending: false }),
+      supabase.from('sales').select('*').order('created_at', { ascending: false }),
+      supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'referral_credit_default')
+        .maybeSingle(),
+    ])
+    // The referral tables not existing yet is the signal to show the setup notice.
+    if (c.error) {
+      setNotMigrated(true)
+      setLoading(false)
+      return
+    }
+    setNotMigrated(false)
+    setCredits(c.data || [])
+    setSales(s.data || [])
+    if (setting.data && setting.data.value != null) {
+      setDefaultAmount(String(setting.data.value))
+    }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  if (loading) return <div className="py-12 flex justify-center"><Spinner className="h-7 w-7" /></div>
+
+  if (notMigrated) {
+    return (
+      <div>
+        <h2 className="font-heading text-3xl text-espresso mb-3">Referrals</h2>
+        <div className="card p-6 bg-amber-50 border border-amber-100">
+          <p className="text-sm text-amber-800 font-medium mb-1">
+            One-time setup needed
+          </p>
+          <p className="text-sm text-amber-800/80">
+            Run <code className="font-mono text-xs bg-white px-1.5 py-0.5 rounded">supabase/referrals.sql</code>{' '}
+            in the Supabase SQL Editor to create the referral tables and the
+            auto-flag trigger. Once it's run, this tab activates — no redeploy needed.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  const salesById = Object.fromEntries(sales.map((s) => [s.id, s]))
+  const unpaid = credits.filter((c) => c.status === 'unpaid')
+  const totalOwed = unpaid.reduce((sum, c) => sum + Number(c.amount || 0), 0)
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="font-heading text-3xl text-espresso mb-1">Referrals</h2>
+        <p className="text-sm text-espresso/50 max-w-2xl">
+          Tag who referred whom on the Partners tab. When a referred partner logs a
+          sale below, a referral credit is flagged for the referrer automatically.
+        </p>
+      </div>
+
+      <ReferralSettingCard
+        defaultAmount={defaultAmount}
+        setDefaultAmount={setDefaultAmount}
+        onSaved={load}
+      />
+
+      <LogSaleCard
+        referredPartners={referredPartners}
+        allPartners={partners}
+        onLogged={load}
+      />
+
+      {/* Credits owed */}
+      <div className="card p-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+          <div>
+            <h3 className="font-heading text-xl text-espresso mb-1">
+              Referral credits owed
+            </h3>
+            <p className="text-xs text-espresso/45 max-w-xl">
+              Auto-flagged when a referred partner logs a sale. Set each amount, then
+              mark it paid once you've paid the referrer.
+            </p>
+          </div>
+          {unpaid.length > 0 && (
+            <div className="text-right">
+              <p className="text-3xl font-semibold tabular-nums tracking-tight text-gold leading-none">
+                {money(totalOwed)}
+              </p>
+              <p className="text-[10px] uppercase tracking-widest text-espresso/40 mt-1">
+                Owed · {unpaid.length} unpaid
+              </p>
+            </div>
+          )}
+        </div>
+
+        {credits.length === 0 ? (
+          <EmptyState
+            title="No referral credits yet"
+            hint="When a referred partner logs a sale, the referrer's credit shows up here."
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-espresso/50 text-xs uppercase tracking-widest border-b border-espresso/10">
+                  <th className="px-4 py-3 font-medium">Referrer (owed)</th>
+                  <th className="px-4 py-3 font-medium">Referred partner</th>
+                  <th className="px-4 py-3 font-medium">Triggering sale</th>
+                  <th className="px-4 py-3 font-medium">Credit</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {credits.map((c) => (
+                  <ReferralCreditRow
+                    key={c.id}
+                    credit={c}
+                    sale={salesById[c.sale_id]}
+                    referrerName={partnerName(c.referrer_id)}
+                    referredName={partnerName(c.referred_partner_id)}
+                    onChange={load}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Editable default credit amount, persisted to app_settings. 0 reads as an
+// explicit "not decided yet" placeholder so Sofia knows to set the real payout.
+function ReferralSettingCard({ defaultAmount, setDefaultAmount, onSaved }) {
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState(null) // {ok} | {error}
+  const isPlaceholder = Number(defaultAmount || 0) === 0
+
+  async function save() {
+    setBusy(true)
+    setMsg(null)
+    const { error } = await supabase
+      .from('app_settings')
+      .upsert(
+        { key: 'referral_credit_default', value: Number(defaultAmount || 0), updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      )
+    setBusy(false)
+    if (error) setMsg({ error: error.message })
+    else {
+      setMsg({ ok: true })
+      onSaved()
+    }
+  }
+
+  return (
+    <div className="card p-6">
+      <h3 className="font-heading text-xl text-espresso mb-1">Default referral credit</h3>
+      <p className="text-xs text-espresso/45 max-w-xl mb-4">
+        The credit amount stamped on each new referral credit. Applies to future
+        sales; existing credits keep their amount (editable per-row below).
+      </p>
+      <div className="flex items-end gap-3 flex-wrap">
+        <Field label="Amount (USD)">
+          <div className="flex items-center gap-2">
+            <span className="text-espresso/50">$</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className="input w-40"
+              value={defaultAmount}
+              onChange={(e) => setDefaultAmount(e.target.value)}
+            />
+          </div>
+        </Field>
+        <button onClick={save} disabled={busy} className="btn-primary">
+          {busy ? <Spinner /> : 'Save'}
+        </button>
+        {isPlaceholder && (
+          <span className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-full px-3 py-1.5">
+            ⚠ Placeholder — referral payout not decided yet. Set the real amount.
+          </span>
+        )}
+      </div>
+      {msg?.ok && <p className="text-xs text-green-700 mt-3">Saved.</p>}
+      {msg?.error && <p className="text-xs text-red-600 mt-3">{msg.error}</p>}
+    </div>
+  )
+}
+
+// Log a partner-attributed sale. Inserting here fires the DB trigger, which
+// flags a referral credit if the partner has a referrer. Referred partners are
+// listed first (their sales are the ones that generate credits).
+function LogSaleCard({ referredPartners, allPartners, onLogged }) {
+  const [open, setOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState(null)
+  const [form, setForm] = useState({
+    partner_id: '',
+    amount: '',
+    order_number: '',
+    item: '',
+    order_date: '',
+    note: '',
+  })
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
+
+  const referredIds = new Set(referredPartners.map((p) => p.id))
+  const others = allPartners
+    .filter((p) => !referredIds.has(p.id))
+    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+
+  async function submit(e) {
+    e.preventDefault()
+    if (!form.partner_id) return
+    setBusy(true)
+    setMsg(null)
+    const { error } = await supabase.from('sales').insert({
+      partner_id: form.partner_id,
+      amount: form.amount === '' ? null : Number(form.amount),
+      order_number: form.order_number.trim() || null,
+      item: form.item.trim() || null,
+      order_date: form.order_date || null,
+      note: form.note.trim() || null,
+      source: 'manual',
+    })
+    setBusy(false)
+    if (error) {
+      setMsg({ error: error.message })
+      return
+    }
+    const referred = referredIds.has(form.partner_id)
+    setMsg({
+      ok: referred
+        ? 'Sale logged — a referral credit was flagged for the referrer.'
+        : 'Sale logged. (This partner has no referrer, so no credit was created.)',
+    })
+    setForm({ partner_id: '', amount: '', order_number: '', item: '', order_date: '', note: '' })
+    onLogged()
+  }
+
+  return (
+    <div className="card p-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="font-heading text-xl text-espresso mb-1">Log a sale</h3>
+          <p className="text-xs text-espresso/45 max-w-xl">
+            Record a sale for a partner. If they were referred, the referrer's credit
+            is flagged automatically.
+          </p>
+        </div>
+        <button onClick={() => setOpen((o) => !o)} className="btn-ghost text-xs">
+          {open ? 'Cancel' : '+ Log a sale'}
+        </button>
+      </div>
+
+      {open && (
+        <form onSubmit={submit} className="mt-5 space-y-4">
+          <Field label="Partner">
+            <select
+              className="input"
+              required
+              value={form.partner_id}
+              onChange={(e) => set('partner_id', e.target.value)}
+            >
+              <option value="">Select a partner…</option>
+              {referredPartners.length > 0 && (
+                <optgroup label="Referred partners (generate a credit)">
+                  {referredPartners
+                    .slice()
+                    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                </optgroup>
+              )}
+              <optgroup label="Other partners">
+                {others.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+          </Field>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Sale amount (USD)">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="input"
+                placeholder="0.00"
+                value={form.amount}
+                onChange={(e) => set('amount', e.target.value)}
+              />
+            </Field>
+            <Field label="Order date">
+              <input
+                type="date"
+                className="input"
+                value={form.order_date}
+                onChange={(e) => set('order_date', e.target.value)}
+              />
+            </Field>
+            <Field label="Order number">
+              <input
+                className="input"
+                placeholder="e.g. OL65689"
+                value={form.order_number}
+                onChange={(e) => set('order_number', e.target.value)}
+              />
+            </Field>
+            <Field label="Item">
+              <input
+                className="input"
+                placeholder="Item name"
+                value={form.item}
+                onChange={(e) => set('item', e.target.value)}
+              />
+            </Field>
+          </div>
+          <Field label="Note">
+            <input
+              className="input"
+              placeholder="Optional context"
+              value={form.note}
+              onChange={(e) => set('note', e.target.value)}
+            />
+          </Field>
+          {msg?.error && <p className="text-sm text-red-600">{msg.error}</p>}
+          <div className="flex justify-end">
+            <button type="submit" disabled={busy} className="btn-primary">
+              {busy ? <Spinner /> : 'Log sale'}
+            </button>
+          </div>
+        </form>
+      )}
+      {!open && msg?.ok && <p className="text-xs text-green-700 mt-3">{msg.ok}</p>}
+      {open && msg?.ok && <p className="text-xs text-green-700 mt-3">{msg.ok}</p>}
+    </div>
+  )
+}
+
+// One row in the credits-owed table: editable amount + paid/unpaid toggle.
+function ReferralCreditRow({ credit, sale, referrerName, referredName, onChange }) {
+  const [amount, setAmount] = useState(String(credit.amount ?? '0'))
+  const [busy, setBusy] = useState(false)
+  const isPlaceholder = Number(credit.amount || 0) === 0
+
+  async function saveAmount() {
+    if (Number(amount || 0) === Number(credit.amount || 0)) return
+    setBusy(true)
+    await supabase
+      .from('referral_credits')
+      .update({ amount: Number(amount || 0) })
+      .eq('id', credit.id)
+    setBusy(false)
+    onChange()
+  }
+
+  async function togglePaid() {
+    setBusy(true)
+    const paid = credit.status === 'paid'
+    await supabase
+      .from('referral_credits')
+      .update({
+        status: paid ? 'unpaid' : 'paid',
+        paid_at: paid ? null : new Date().toISOString(),
+      })
+      .eq('id', credit.id)
+    setBusy(false)
+    onChange()
+  }
+
+  return (
+    <tr className="border-b border-espresso/5 last:border-0">
+      <td className="px-4 py-3 font-medium text-espresso">{referrerName}</td>
+      <td className="px-4 py-3 text-espresso/70">{referredName}</td>
+      <td className="px-4 py-3 text-espresso/60">
+        {sale ? (
+          <span>
+            {sale.order_number ? `Order ${sale.order_number}` : 'Sale'}
+            {sale.item ? ` · ${sale.item}` : ''}
+            {sale.amount != null && (
+              <span className="text-espresso/40"> · {money(sale.amount)}</span>
+            )}
+            {sale.order_date && (
+              <span className="text-espresso/40"> · {sale.order_date}</span>
+            )}
+          </span>
+        ) : (
+          <span className="text-espresso/30">—</span>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1.5">
+          <span className="text-espresso/50">$</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            className="input w-24 py-1.5"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            onBlur={saveAmount}
+            disabled={busy}
+          />
+          {isPlaceholder && (
+            <span
+              className="text-[10px] text-amber-700"
+              title="Set the referral amount"
+            >
+              set amount
+            </span>
+          )}
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <Badge status={credit.status === 'paid' ? 'Delivered' : 'Return Pending'}>
+          {credit.status === 'paid' ? 'Paid' : 'Unpaid'}
+        </Badge>
+      </td>
+      <td className="px-4 py-3 text-right">
+        <button onClick={togglePaid} disabled={busy} className="btn-ghost text-xs">
+          {busy ? <Spinner /> : credit.status === 'paid' ? 'Mark unpaid' : 'Mark paid'}
+        </button>
+      </td>
+    </tr>
+  )
+}
+
 /* ─────────────────────────── Selections ──────────────────────────── */
 
 // Partners' picks from the live catalog. New submissions land here as the
@@ -1164,10 +1680,12 @@ function SelectionsTab({ selections, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-heading text-3xl text-espresso">Partner Selections</h2>
+        <h2 className="font-heading text-3xl text-espresso">Style Preferences</h2>
         <p className="text-sm text-espresso/55 mt-1 max-w-xl">
-          Pieces partners chose from the live collection. New submissions appear here
-          (and flag the tab) so you see them at a glance.
+          Partners' style-quiz answers — the vibes, colors, fabrics, silhouettes, sizes and
+          occasions to curate their box from. New submissions appear here (and flag the tab)
+          so you see them at a glance. Older rows may show pieces picked under the previous
+          catalog flow.
         </p>
       </div>
 
@@ -1210,6 +1728,9 @@ function SelectionsTab({ selections, onChange }) {
 function SelectionCard({ selection, onChange }) {
   const [busy, setBusy] = useState(false)
   const items = Array.isArray(selection.items) ? selection.items : []
+  // Style-quiz submissions carry a single tagged payload in `items`; older
+  // rows carry an array of picked products. Detect which so each renders right.
+  const quiz = items[0]?.kind === 'style_quiz' ? items[0] : null
 
   const when = selection.created_at
     ? new Date(selection.created_at).toLocaleString('en-US', {
@@ -1273,34 +1794,38 @@ function SelectionCard({ selection, onChange }) {
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.map((it, i) => (
-          <div
-            key={`${it.variant_id || it.product_id}-${i}`}
-            className="rounded-xl border border-espresso/5 bg-white overflow-hidden"
-          >
-            <div className="aspect-[4/5] bg-cream overflow-hidden">
-              {it.image ? (
-                <img
-                  src={it.image}
-                  alt={it.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              ) : null}
+      {quiz ? (
+        <QuizAnswers quiz={quiz} />
+      ) : (
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {items.map((it, i) => (
+            <div
+              key={`${it.variant_id || it.product_id}-${i}`}
+              className="rounded-xl border border-espresso/5 bg-white overflow-hidden"
+            >
+              <div className="aspect-[4/5] bg-cream overflow-hidden">
+                {it.image ? (
+                  <img
+                    src={it.image}
+                    alt={it.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                ) : null}
+              </div>
+              <div className="p-2">
+                <p className="text-xs font-medium text-espresso leading-tight line-clamp-2">
+                  {it.title}
+                </p>
+                {it.color && <p className="text-[11px] text-espresso/45">{it.color}</p>}
+                {it.price != null && (
+                  <p className="text-[11px] text-espresso/60 mt-0.5">{money(it.price)}</p>
+                )}
+              </div>
             </div>
-            <div className="p-2">
-              <p className="text-xs font-medium text-espresso leading-tight line-clamp-2">
-                {it.title}
-              </p>
-              {it.color && <p className="text-[11px] text-espresso/45">{it.color}</p>}
-              {it.price != null && (
-                <p className="text-[11px] text-espresso/60 mt-0.5">{money(it.price)}</p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {selection.shipping_address && (
@@ -1313,6 +1838,86 @@ function SelectionCard({ selection, onChange }) {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// Renders a partner's style-quiz answers for the curation team: the multi-select
+// vibe/color/fabric/silhouette/occasion groups as pills, plus structured sizes
+// and anything-to-avoid. Tolerant of missing sections (partner may skip some).
+function QuizAnswers({ quiz }) {
+  const groups = [
+    { key: 'vibes', label: 'Style vibe' },
+    { key: 'colors', label: 'Colors & palette' },
+    { key: 'fabrics', label: 'Fabrics & textures' },
+    { key: 'silhouettes', label: 'Silhouettes' },
+    { key: 'occasions', label: 'Occasions' },
+  ]
+  const sizes = quiz.sizes && typeof quiz.sizes === 'object' ? quiz.sizes : {}
+  const sizeEntries = Object.entries(sizes).filter(([, v]) => v)
+  const SIZE_LABELS = { tops: 'Tops', bottoms: 'Bottoms', dress: 'Dress', shoe: 'Shoe' }
+
+  return (
+    <div className="mt-4 rounded-xl border border-gold/20 bg-gold/5 p-4 space-y-3.5">
+      <div className="flex items-center gap-2">
+        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-gold/20 text-gold">
+          Style quiz
+        </span>
+        <span className="text-xs text-espresso/45">Curate a box to match these preferences</span>
+      </div>
+
+      {groups.map((g) => {
+        const vals = Array.isArray(quiz[g.key]) ? quiz[g.key] : []
+        return (
+          <div key={g.key}>
+            <p className="text-[10px] uppercase tracking-widest text-espresso/50 font-medium mb-1.5">
+              {g.label}
+            </p>
+            {vals.length === 0 ? (
+              <p className="text-sm text-espresso/30">—</p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {vals.map((v) => (
+                  <span
+                    key={v}
+                    className="inline-flex items-center rounded-full bg-white border border-espresso/10 px-3 py-1 text-xs text-espresso"
+                  >
+                    {v}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {sizeEntries.length > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-espresso/50 font-medium mb-1.5">
+            Sizes
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {sizeEntries.map(([k, v]) => (
+              <span
+                key={k}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white border border-espresso/10 px-3 py-1 text-xs"
+              >
+                <span className="text-espresso/45">{SIZE_LABELS[k] || k}</span>
+                <span className="text-espresso font-medium">{v}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {quiz.avoid && (
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-espresso/50 font-medium mb-1">
+            Avoid
+          </p>
+          <p className="text-sm text-espresso/75">{quiz.avoid}</p>
+        </div>
+      )}
     </div>
   )
 }

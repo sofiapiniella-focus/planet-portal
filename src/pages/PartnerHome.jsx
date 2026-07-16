@@ -1,15 +1,79 @@
-import { useEffect, useState, useCallback, useDeferredValue } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { fetchPartnerByToken, submitSelection, fetchCommissionsByToken } from '../lib/partner'
-import { fetchCatalog } from '../lib/catalog'
-import { Logo, Card, Badge, Spinner, FullPageLoader, EmptyState } from '../components/ui'
+import { fetchPartnerByToken, submitQuiz, fetchCommissionsByToken } from '../lib/partner'
+import { Logo, Card, Badge, Spinner, FullPageLoader } from '../components/ui'
 
-// Max pieces a partner may select in one submission. Change this single
-// constant to raise/lower the cap everywhere.
-const MAX_SELECTIONS = 3
+// The style quiz — instead of partners picking specific SKUs (which sell out
+// and force swaps), they share their preferences and the PLANET team curates a
+// cohesive box from what's in stock. Each section is a multi-select of on-brand
+// options; answers are stored as a tagged JSON payload in partner_selections.
+const QUIZ_SECTIONS = [
+  {
+    key: 'vibes',
+    label: 'Your style vibe',
+    hint: 'Pick the aesthetics that feel most you — choose as many as you like.',
+    options: [
+      'Classic & Tailored',
+      'Effortless & Relaxed',
+      'Architectural & Edgy',
+      'Soft & Romantic',
+      'Minimal & Monochrome',
+      'Statement & Bold',
+    ],
+  },
+  {
+    key: 'colors',
+    label: 'Colors & palette',
+    hint: 'The tones you reach for most.',
+    options: [
+      'Neutrals & Creams',
+      'Black & White',
+      'Earth Tones',
+      'Jewel Tones',
+      'Brights & Color',
+      'Soft Pastels',
+    ],
+  },
+  {
+    key: 'fabrics',
+    label: 'Fabrics & textures',
+    hint: 'What you love to wear.',
+    options: [
+      'Structured & Tailored',
+      'Flowy & Drapey',
+      'Cozy Knits',
+      'Vegan Leather',
+      'Linen & Natural',
+      'Silky & Smooth',
+    ],
+  },
+  {
+    key: 'silhouettes',
+    label: 'Silhouettes you love',
+    hint: 'The shapes you gravitate toward.',
+    options: [
+      'Pants-forward',
+      'Dresses',
+      'Tops & Blouses',
+      'Layering Pieces',
+      'Skirts',
+      'Jumpsuits',
+    ],
+  },
+  {
+    key: 'occasions',
+    label: "Occasions you'd style for",
+    hint: 'Where these pieces will live.',
+    options: ['Everyday', 'Work & Office', 'Events & Evening', 'Travel', 'Weekend'],
+  },
+]
+
+// Fresh, empty answer state for the multi-select sections + structured sizes.
+const EMPTY_ANSWERS = { vibes: [], colors: [], fabrics: [], silhouettes: [], occasions: [] }
+const EMPTY_SIZES = { tops: '', bottoms: '', dress: '', shoe: '' }
 
 // Kit statuses that mean "a box is already out with this partner" — when true
-// we lead with kit status/tracking and make the picker secondary.
+// we lead with kit status/tracking and make the quiz secondary.
 const OUTGOING_KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending']
 
 function money(n) {
@@ -171,11 +235,11 @@ export default function PartnerHome() {
         {boxIsOut ? (
           <>
             <KitSection kit={kit} pieces={pieces} />
-            <NextBoxPicker token={token} />
+            <NextStyleQuiz token={token} />
           </>
         ) : (
           <>
-            <BoxPicker token={token} hadKit={Boolean(kit)} />
+            <StyleQuizSection token={token} hadKit={Boolean(kit)} />
             {kit && <KitSection kit={kit} pieces={pieces} collapsedTitle />}
           </>
         )}
@@ -376,30 +440,30 @@ function KitSection({ kit, pieces, collapsedTitle = false }) {
   )
 }
 
-/* ─────────────────────── 4) Box picker ───────────────────────────── */
+/* ─────────────────────── 4) Style quiz ───────────────────────────── */
 
-// Prominent picker (no box out yet).
-function BoxPicker({ token, hadKit }) {
+// Prominent quiz (no box out yet).
+function StyleQuizSection({ token, hadKit }) {
   return (
     <div>
-      <div className="mb-4">
-        <p className="eyebrow">The collection</p>
+      <div className="mb-5">
+        <p className="eyebrow">Your style profile</p>
         <h2 className="font-heading text-3xl md:text-4xl text-espresso mt-1">
-          {hadKit ? 'Pick your next box' : 'Pick your box'}
+          {hadKit ? 'Refresh your style preferences' : 'Tell us your style'}
         </h2>
         <p className="text-espresso/60 mt-2 font-light max-w-2xl">
-          Browse what's in stock right now and choose up to {MAX_SELECTIONS} pieces you'd
-          love. Add a note with your sizes or preferences, then submit — we'll take it from
-          there.
+          Rather than picking individual pieces (which sell out fast), share the styles you
+          love and our team will hand-curate a cohesive box for you from what's freshly in
+          stock — pairing full looks so your content tells a beautiful story.
         </p>
       </div>
-      <PickerBody token={token} />
+      <QuizForm token={token} />
     </div>
   )
 }
 
-// Secondary picker (a box is already out) — tucked behind a reveal.
-function NextBoxPicker({ token }) {
+// Secondary quiz (a box is already out) — tucked behind a reveal.
+function NextStyleQuiz({ token }) {
   const [open, setOpen] = useState(false)
   return (
     <Card>
@@ -407,84 +471,122 @@ function NextBoxPicker({ token }) {
         <div>
           <p className="eyebrow">Planning ahead</p>
           <h2 className="font-heading text-2xl text-espresso mt-1">
-            Wishlist your next box
+            Update your style preferences
           </h2>
           <p className="text-sm text-espresso/55 mt-1 max-w-lg">
-            Your current box is on its way. When you're ready, pick the pieces you'd love to
-            see next.
+            Your current box is on its way. When you're ready, tell us how your style is
+            evolving and we'll tailor your next box to match.
           </p>
         </div>
         <button onClick={() => setOpen((v) => !v)} className="btn-outline text-xs shrink-0">
-          {open ? 'Hide' : 'Browse the collection'}
+          {open ? 'Hide' : 'Take the style quiz'}
         </button>
       </div>
       {open && (
         <div className="mt-6">
-          <PickerBody token={token} />
+          <QuizForm token={token} />
         </div>
       )}
     </Card>
   )
 }
 
-// Shared picker: catalog grid + selection bar + submit.
-function PickerBody({ token }) {
-  const [catalog, setCatalog] = useState({ loading: true })
-  const [selected, setSelected] = useState({})
+// Multi-select pill group used by every style-quiz section.
+function ChipGroup({ options, selected, onToggle }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const on = selected.includes(opt)
+        return (
+          <button
+            key={opt}
+            type="button"
+            aria-pressed={on}
+            onClick={() => onToggle(opt)}
+            className={`rounded-full border px-4 py-2 text-sm font-medium tracking-wide transition ${
+              on
+                ? 'border-gold bg-gold/15 text-espresso'
+                : 'border-espresso/15 text-espresso/60 hover:border-espresso/40'
+            }`}
+          >
+            {opt}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// The style quiz form: multi-select vibe/color/fabric/silhouette/occasion,
+// structured sizes, an "avoid" note, an optional free note, and the ship-to
+// address (unchanged from the old flow). On submit it stores a tagged
+// `style_quiz` payload in partner_selections via submitQuiz().
+function QuizForm({ token }) {
+  const [answers, setAnswers] = useState(EMPTY_ANSWERS)
+  const [sizes, setSizes] = useState(EMPTY_SIZES)
+  const [avoid, setAvoid] = useState('')
   const [note, setNote] = useState('')
   const [ship, setShip] = useState(EMPTY_SHIPPING)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
-  const [confirmOpen, setConfirmOpen] = useState(false) // note + confirm modal
-  const [query, setQuery] = useState('')
-  // Defer filtering off the keystroke so typing stays smooth over ~900 items.
-  const deferredQuery = useDeferredValue(query)
 
-  useEffect(() => {
-    let active = true
-    fetchCatalog()
-      .then((d) => active && setCatalog({ loading: false, items: d.items || [] }))
-      .catch((e) => active && setCatalog({ loading: false, error: e.message }))
-    return () => {
-      active = false
-    }
-  }, [])
-
-  const selectedCount = Object.keys(selected).length
-  const atMax = selectedCount >= MAX_SELECTIONS
-
-  const toggle = useCallback((item) => {
-    setSelected((prev) => {
-      const next = { ...prev }
-      if (next[item.product_id]) {
-        delete next[item.product_id]
-      } else {
-        if (Object.keys(next).length >= MAX_SELECTIONS) return prev
-        next[item.product_id] = item
+  const toggle = (key) => (opt) =>
+    setAnswers((prev) => {
+      const list = prev[key]
+      return {
+        ...prev,
+        [key]: list.includes(opt) ? list.filter((v) => v !== opt) : [...list, opt],
       }
-      return next
     })
-  }, [])
+
+  const setSizeField = (key) => (e) =>
+    setSizes((prev) => ({ ...prev, [key]: e.target.value }))
+  const setShipField = (key) => (e) => setShip((prev) => ({ ...prev, [key]: e.target.value }))
+
+  const totalPicked = QUIZ_SECTIONS.reduce((n, s) => n + answers[s.key].length, 0)
+
+  function reset() {
+    setSubmitted(false)
+    setAnswers(EMPTY_ANSWERS)
+    setSizes(EMPTY_SIZES)
+    setAvoid('')
+    setNote('')
+    setShip(EMPTY_SHIPPING)
+    setError('')
+  }
 
   async function submit() {
-    if (selectedCount === 0) return
-    // Require a complete ship-to before submitting — Sofia needs somewhere
-    // to send the box.
+    setError('')
+    // Need at least a little to curate from, and somewhere to send the box.
+    if (answers.vibes.length === 0) {
+      setError('Please pick at least one style vibe so we know where to start.')
+      return
+    }
     if (!shippingComplete(ship)) {
       setError('Please fill in your shipping address so we know where to send your box.')
       return
     }
     setSubmitting(true)
-    setError('')
-    const items = Object.values(selected).map((it) => ({
-      product_id: it.product_id,
-      title: it.title,
-      variant_id: it.variant_id,
-      color: it.color,
-      price: it.price,
-      image: it.image,
-    }))
+
+    // Trim the structured sizes down to only the fields the partner filled.
+    const cleanSizes = Object.fromEntries(
+      Object.entries(sizes)
+        .map(([k, v]) => [k, (v || '').trim()])
+        .filter(([, v]) => v)
+    )
+    // The tagged preferences payload the admin dashboard reads back.
+    const preferences = {
+      kind: 'style_quiz',
+      version: 1,
+      vibes: answers.vibes,
+      colors: answers.colors,
+      fabrics: answers.fabrics,
+      silhouettes: answers.silhouettes,
+      occasions: answers.occasions,
+      sizes: cleanSizes,
+      avoid: avoid.trim(),
+    }
     const shipping = {
       name: ship.name.trim(),
       line1: ship.line1.trim(),
@@ -494,8 +596,7 @@ function PickerBody({ token }) {
       zip: ship.zip.trim(),
     }
     try {
-      await submitSelection(token, items, note.trim(), shipping)
-      setConfirmOpen(false)
+      await submitQuiz(token, preferences, note.trim(), shipping)
       setSubmitted(true)
     } catch (e) {
       setError(e.message)
@@ -504,32 +605,14 @@ function PickerBody({ token }) {
     }
   }
 
-  // Only show the sticky bar once the catalog is actually pickable.
-  const showBar =
-    !submitted && !catalog.loading && !catalog.error && (catalog.items?.length || 0) > 0
-
-  // Live search over title + color + product type (case-insensitive). Filtering
-  // only affects what's shown — `selected` is keyed by product_id and untouched,
-  // so picks survive being filtered out of view.
-  const q = deferredQuery.trim().toLowerCase()
-  const allItems = catalog.items || []
-  const filtered = q
-    ? allItems.filter(
-        (it) =>
-          (it.title || '').toLowerCase().includes(q) ||
-          (it.color || '').toLowerCase().includes(q) ||
-          (it.product_type || '').toLowerCase().includes(q)
-      )
-    : allItems
-
   if (submitted) {
     return (
       <Card className="text-center">
         <div className="text-4xl mb-3">✦</div>
-        <h3 className="font-heading text-2xl text-espresso">Your picks are in</h3>
+        <h3 className="font-heading text-2xl text-espresso">Your style profile is in</h3>
         <p className="mt-2 text-sm text-espresso/60 leading-relaxed">
-          Thank you — the PLANET team has been notified and will follow up with you shortly
-          about your {selectedCount} piece{selectedCount === 1 ? '' : 's'}.
+          Thank you — the PLANET team has been notified and will hand-curate a box that
+          matches the styles you love, from what's freshly in stock.
         </p>
 
         {/* Two gentle asks once the box lands — warm, on-brand, low-pressure. */}
@@ -553,338 +636,152 @@ function PickerBody({ token }) {
           </div>
         </div>
 
-        <button
-          onClick={() => {
-            setSubmitted(false)
-            setSelected({})
-            setNote('')
-            setShip(EMPTY_SHIPPING)
-          }}
-          className="btn-ghost text-xs mt-6 mx-auto"
-        >
-          Choose more
+        <button onClick={reset} className="btn-ghost text-xs mt-6 mx-auto">
+          Edit my preferences
         </button>
       </Card>
     )
   }
 
   return (
-    <>
-      {catalog.loading ? (
-        <div className="flex items-center gap-3 text-espresso/50 text-sm py-16 justify-center">
-          <Spinner /> Loading the live collection…
-        </div>
-      ) : catalog.error ? (
-        <Card className="text-center">
-          <p className="text-sm text-espresso/60">
-            We couldn't load the collection right now. Please try again in a moment.
-          </p>
-        </Card>
-      ) : catalog.items.length === 0 ? (
-        <EmptyState
-          title="Nothing in stock right now"
-          hint="Check back soon — new pieces are added regularly."
-        />
-      ) : (
-        <>
-          {/* Sticky search — stays reachable while scrolling the grid. */}
-          <div className="sticky top-[60px] z-10 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-cream/95 backdrop-blur">
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-espresso/30 pointer-events-none">
-                ⌕
-              </span>
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search pieces…"
-                aria-label="Search pieces"
-                className="input pl-9"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-espresso/35 hover:text-espresso/70 text-sm"
-                  aria-label="Clear search"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-            <p className="text-xs text-espresso/45 mt-2">
-              {filtered.length} piece{filtered.length === 1 ? '' : 's'}
-              {q && ` matching “${deferredQuery.trim()}”`}
-            </p>
-          </div>
-
-          {filtered.length === 0 ? (
-            <EmptyState
-              title="No pieces match your search"
-              hint="Try a different name, color, or category."
-            />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filtered.map((item) => (
-                <ProductCard
-                  key={item.product_id}
-                  item={item}
-                  isSelected={Boolean(selected[item.product_id])}
-                  disabled={atMax && !selected[item.product_id]}
-                  onToggle={() => toggle(item)}
-                />
-              ))}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Always-visible sticky submit bar (compact — stays reachable while
-          scrolling ~900 products). Disabled until at least one pick. */}
-      {showBar && (
-        <div className="fixed bottom-0 inset-x-0 z-20 border-t border-espresso/10 bg-cream/95 backdrop-blur">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${
-                  selectedCount > 0 ? 'bg-gold/20 text-gold' : 'bg-espresso/10 text-espresso/50'
-                }`}
-              >
-                {selectedCount} / {MAX_SELECTIONS} selected
-              </span>
-              {selectedCount > 0 && (
-                <button
-                  onClick={() => setSelected({})}
-                  className="text-xs text-espresso/45 hover:text-espresso/70 hidden sm:inline"
-                >
-                  Clear
-                </button>
-              )}
-              <span className="text-xs text-espresso/45 truncate hidden sm:inline">
-                {selectedCount === 0
-                  ? 'Tap pieces to add them to your box'
-                  : atMax
-                  ? `Max of ${MAX_SELECTIONS} reached`
-                  : ''}
-              </span>
-            </div>
-            <button
-              onClick={() => {
-                setError('')
-                setConfirmOpen(true)
-              }}
-              disabled={selectedCount === 0}
-              className="btn-primary shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Submit selection
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Confirm + note modal, reached via the sticky Submit button. */}
-      {confirmOpen && (
-        <SubmitModal
-          items={Object.values(selected)}
-          note={note}
-          setNote={setNote}
-          ship={ship}
-          setShip={setShip}
-          onRemove={toggle}
-          onCancel={() => !submitting && setConfirmOpen(false)}
-          onSubmit={submit}
-          submitting={submitting}
-          error={error}
-        />
-      )}
-    </>
-  )
-}
-
-// Lightweight confirm dialog: review picks, add an optional note, submit.
-function SubmitModal({ items, note, setNote, ship, setShip, onRemove, onCancel, onSubmit, submitting, error }) {
-  const setField = (key) => (e) => setShip((prev) => ({ ...prev, [key]: e.target.value }))
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-cream w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-soft max-h-[88vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-espresso/10 sticky top-0 bg-cream">
-          <h3 className="font-heading text-2xl text-espresso">
-            Submit your {items.length} pick{items.length === 1 ? '' : 's'}
-          </h3>
-          <button
-            onClick={onCancel}
-            className="text-espresso/40 hover:text-espresso text-xl"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="p-6 space-y-4">
-          <div className="space-y-2">
-            {items.map((it) => (
-              <div
-                key={it.product_id}
-                className="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-espresso/5"
-              >
-                <div className="w-10 h-12 rounded-lg bg-cream overflow-hidden shrink-0">
-                  {it.image && (
-                    <img src={it.image} alt="" className="w-full h-full object-cover" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-espresso truncate">{it.title}</p>
-                  {it.color && <p className="text-xs text-espresso/45">{it.color}</p>}
-                </div>
-                <button
-                  onClick={() => onRemove(it)}
-                  disabled={submitting}
-                  className="text-espresso/30 hover:text-red-600 text-sm px-1"
-                  aria-label={`Remove ${it.title}`}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-            {items.length === 0 && (
-              <p className="text-sm text-espresso/50">
-                You've removed everything — close this and pick a few pieces.
-              </p>
-            )}
-          </div>
-
-          <div className="pt-1">
-            <p className="label">Shipping address</p>
-            <p className="text-xs text-espresso/45 mb-2">Where should we send your box?</p>
-            <div className="space-y-2">
-              <input
-                value={ship.name}
-                onChange={setField('name')}
-                placeholder="Full name"
-                autoComplete="name"
-                className="input"
-              />
-              <input
-                value={ship.line1}
-                onChange={setField('line1')}
-                placeholder="Street address"
-                autoComplete="address-line1"
-                className="input"
-              />
-              <input
-                value={ship.line2}
-                onChange={setField('line2')}
-                placeholder="Apt, suite, etc. (optional)"
-                autoComplete="address-line2"
-                className="input"
-              />
-              <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
-                <input
-                  value={ship.city}
-                  onChange={setField('city')}
-                  placeholder="City"
-                  autoComplete="address-level2"
-                  className="input sm:col-span-3"
-                />
-                <input
-                  value={ship.state}
-                  onChange={setField('state')}
-                  placeholder="State"
-                  autoComplete="address-level1"
-                  className="input sm:col-span-1"
-                />
-                <input
-                  value={ship.zip}
-                  onChange={setField('zip')}
-                  placeholder="ZIP"
-                  inputMode="numeric"
-                  autoComplete="postal-code"
-                  className="input sm:col-span-2"
-                />
-              </div>
-            </div>
-          </div>
-
-          <label className="block">
-            <span className="label">Note (sizes, preferences — optional)</span>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={3}
-              placeholder="e.g. Size M, prefer the espresso tones"
-              className="input resize-none"
-            />
-          </label>
-
-          {error && <p className="text-sm text-red-600">{error}</p>}
-
-          <div className="flex items-center justify-end gap-3 pt-1">
-            <button
-              onClick={onCancel}
-              disabled={submitting}
-              className="btn-ghost text-xs"
-            >
-              Keep browsing
-            </button>
-            <button
-              onClick={onSubmit}
-              disabled={submitting || items.length === 0}
-              className="btn-primary disabled:opacity-40"
-            >
-              {submitting ? <Spinner /> : 'Submit selection'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ProductCard({ item, isSelected, disabled, onToggle }) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      disabled={disabled}
-      className={`text-left rounded-2xl border bg-white overflow-hidden transition ${
-        isSelected
-          ? 'border-gold ring-2 ring-gold/40'
-          : disabled
-          ? 'border-espresso/5 opacity-40 cursor-not-allowed'
-          : 'border-espresso/5 hover:border-espresso/20'
-      }`}
-    >
-      <div className="aspect-[4/5] bg-cream relative overflow-hidden">
-        {item.image ? (
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
+    <Card className="space-y-7">
+      {QUIZ_SECTIONS.map((section) => (
+        <div key={section.key}>
+          <p className="label mb-0.5">{section.label}</p>
+          <p className="text-xs text-espresso/45 mb-3">{section.hint}</p>
+          <ChipGroup
+            options={section.options}
+            selected={answers[section.key]}
+            onToggle={toggle(section.key)}
           />
-        ) : (
-          <span className="absolute inset-0 flex items-center justify-center font-heading text-espresso/20 italic">
-            No photo
-          </span>
-        )}
-        {isSelected && (
-          <span className="absolute top-2 right-2 h-6 w-6 rounded-full bg-gold text-white flex items-center justify-center text-xs shadow-soft">
-            ✓
-          </span>
-        )}
+        </div>
+      ))}
+
+      {/* Sizes — structured, replaces the old "put your size in the note" flow. */}
+      <div>
+        <p className="label mb-0.5">Your sizes</p>
+        <p className="text-xs text-espresso/45 mb-3">
+          So everything fits beautifully. Fill in whatever applies.
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <input
+            value={sizes.tops}
+            onChange={setSizeField('tops')}
+            placeholder="Tops (e.g. M)"
+            className="input"
+          />
+          <input
+            value={sizes.bottoms}
+            onChange={setSizeField('bottoms')}
+            placeholder="Bottoms (e.g. 6)"
+            className="input"
+          />
+          <input
+            value={sizes.dress}
+            onChange={setSizeField('dress')}
+            placeholder="Dress (e.g. 4)"
+            className="input"
+          />
+          <input
+            value={sizes.shoe}
+            onChange={setSizeField('shoe')}
+            placeholder="Shoe (e.g. 8)"
+            className="input"
+          />
+        </div>
       </div>
-      <div className="p-3">
-        <h3 className="text-sm font-medium text-espresso leading-tight line-clamp-2">
-          {item.title}
-        </h3>
-        {item.color && <p className="text-xs text-espresso/45 mt-0.5">{item.color}</p>}
-        <p className="text-sm text-espresso/70 mt-1">{money(item.price)}</p>
+
+      {/* Anything to avoid */}
+      <label className="block">
+        <span className="label">Anything to avoid?</span>
+        <textarea
+          value={avoid}
+          onChange={(e) => setAvoid(e.target.value)}
+          rows={2}
+          placeholder="e.g. no bright yellow, nothing sleeveless, no mini lengths"
+          className="input resize-none"
+        />
+      </label>
+
+      {/* Free note */}
+      <label className="block">
+        <span className="label">Anything else you'd love us to know? (optional)</span>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          rows={2}
+          placeholder="Tell us about your style, an upcoming event, a piece you've been dreaming of…"
+          className="input resize-none"
+        />
+      </label>
+
+      {/* Shipping address — unchanged capture from the old flow. */}
+      <div>
+        <p className="label mb-0.5">Shipping address</p>
+        <p className="text-xs text-espresso/45 mb-3">Where should we send your box?</p>
+        <div className="space-y-2">
+          <input
+            value={ship.name}
+            onChange={setShipField('name')}
+            placeholder="Full name"
+            autoComplete="name"
+            className="input"
+          />
+          <input
+            value={ship.line1}
+            onChange={setShipField('line1')}
+            placeholder="Street address"
+            autoComplete="address-line1"
+            className="input"
+          />
+          <input
+            value={ship.line2}
+            onChange={setShipField('line2')}
+            placeholder="Apt, suite, etc. (optional)"
+            autoComplete="address-line2"
+            className="input"
+          />
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
+            <input
+              value={ship.city}
+              onChange={setShipField('city')}
+              placeholder="City"
+              autoComplete="address-level2"
+              className="input sm:col-span-3"
+            />
+            <input
+              value={ship.state}
+              onChange={setShipField('state')}
+              placeholder="State"
+              autoComplete="address-level1"
+              className="input sm:col-span-1"
+            />
+            <input
+              value={ship.zip}
+              onChange={setShipField('zip')}
+              placeholder="ZIP"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              className="input sm:col-span-2"
+            />
+          </div>
+        </div>
       </div>
-    </button>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <div className="flex items-center justify-between gap-3 pt-1">
+        <span className="text-xs text-espresso/45">
+          {totalPicked} preference{totalPicked === 1 ? '' : 's'} selected
+        </span>
+        <button
+          onClick={submit}
+          disabled={submitting}
+          className="btn-primary shrink-0 disabled:opacity-40"
+        >
+          {submitting ? <Spinner /> : 'Submit my style profile'}
+        </button>
+      </div>
+    </Card>
   )
 }
