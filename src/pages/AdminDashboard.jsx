@@ -30,7 +30,6 @@ const KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending', 'Re
 // not something in the partner's hands. Everything except 'Returned' is active.
 const ACTIVE_KIT_STATUSES = ['Preparing', 'Shipped', 'Delivered', 'Return Pending']
 const isActiveKit = (k) => ACTIVE_KIT_STATUSES.includes(k?.status)
-const CONTENT_TYPES = ['Reel', 'Feed Post', 'Story', 'Blog Post']
 const PLATFORMS = ['GoAffPro', 'Impact']
 
 // Partners we explicitly GIFTED product to (no return expected) — distinct
@@ -157,7 +156,6 @@ export default function AdminDashboard() {
     { id: 'selections', label: 'Selections', badge: newSelections },
     { id: 'outreach', label: 'Everyone Contacted' },
     { id: 'kits', label: 'Kit Tracker' },
-    { id: 'content', label: 'Content Tracker' },
   ]
 
   return (
@@ -220,9 +218,6 @@ export default function AdminDashboard() {
         {tab === 'outreach' && <OutreachTab />}
         {tab === 'kits' && (
           <KitsTab partners={partners} kits={kits} pieces={pieces} onChange={load} />
-        )}
-        {tab === 'content' && (
-          <ContentTab partners={partners} content={content} onChange={load} />
         )}
       </main>
     </div>
@@ -2717,173 +2712,6 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
           </button>
         </div>
       </div>
-    </Modal>
-  )
-}
-
-/* ───────────────────────── Content Tracker ───────────────────────── */
-
-function ContentTab({ partners, content, onChange }) {
-  const [adding, setAdding] = useState(false)
-  const partnerName = Object.fromEntries(partners.map((p) => [p.id, p.name]))
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="font-heading text-3xl text-espresso">Content Tracker</h2>
-        <button
-          onClick={() => setAdding(true)}
-          disabled={partners.length === 0}
-          className="btn-gold"
-        >
-          + Log content
-        </button>
-      </div>
-
-      {content.length === 0 ? (
-        <EmptyState
-          title="Nothing logged yet"
-          hint="Log what each partner has posted to keep track."
-        />
-      ) : (
-        <div className="card overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-espresso/50 text-xs uppercase tracking-widest border-b border-espresso/10">
-                <th className="px-5 py-3 font-medium">Partner</th>
-                <th className="px-5 py-3 font-medium">Type</th>
-                <th className="px-5 py-3 font-medium">Date</th>
-                <th className="px-5 py-3 font-medium">Notes</th>
-                <th className="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {content.map((c) => (
-                <ContentRow
-                  key={c.id}
-                  row={c}
-                  name={partnerName[c.partner_id] || 'Unknown'}
-                  onChange={onChange}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {adding && (
-        <ContentModal
-          partners={partners}
-          onClose={() => setAdding(false)}
-          onSaved={() => {
-            setAdding(false)
-            onChange()
-          }}
-        />
-      )}
-    </div>
-  )
-}
-
-function ContentRow({ row, name, onChange }) {
-  async function remove() {
-    if (!confirm('Delete this content entry?')) return
-    await supabase.from('content_log').delete().eq('id', row.id)
-    onChange()
-  }
-  return (
-    <tr className="border-b border-espresso/5 last:border-0">
-      <td className="px-5 py-3 font-medium text-espresso">{name}</td>
-      <td className="px-5 py-3">
-        <Badge status={row.content_type} />
-      </td>
-      <td className="px-5 py-3 text-espresso/60">{row.post_date || '—'}</td>
-      <td className="px-5 py-3 text-espresso/60">{row.notes || '—'}</td>
-      <td className="px-5 py-3 text-right">
-        <button onClick={remove} className="btn-ghost text-xs text-red-600 hover:bg-red-50">
-          Delete
-        </button>
-      </td>
-    </tr>
-  )
-}
-
-function ContentModal({ partners, onClose, onSaved }) {
-  const [form, setForm] = useState({
-    partner_id: partners[0]?.id || '',
-    content_type: 'Reel',
-    post_date: '',
-    notes: '',
-  })
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-
-  function set(k, v) {
-    setForm((f) => ({ ...f, [k]: v }))
-  }
-
-  async function save(e) {
-    e.preventDefault()
-    setBusy(true)
-    setError('')
-    const payload = { ...form, post_date: form.post_date || null }
-    const { error } = await supabase.from('content_log').insert(payload)
-    setBusy(false)
-    if (error) setError(error.message)
-    else onSaved()
-  }
-
-  return (
-    <Modal title="Log content" onClose={onClose}>
-      <form onSubmit={save} className="space-y-4">
-        <Field label="Partner">
-          <select
-            className="input"
-            value={form.partner_id}
-            onChange={(e) => set('partner_id', e.target.value)}
-          >
-            {partners.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Content type">
-          <select
-            className="input"
-            value={form.content_type}
-            onChange={(e) => set('content_type', e.target.value)}
-          >
-            {CONTENT_TYPES.map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Post date">
-          <input
-            type="date"
-            className="input"
-            value={form.post_date}
-            onChange={(e) => set('post_date', e.target.value)}
-          />
-        </Field>
-        <Field label="Notes">
-          <textarea
-            rows={3}
-            className="input resize-none"
-            placeholder="Views, engagement, link, anything worth noting…"
-            value={form.notes}
-            onChange={(e) => set('notes', e.target.value)}
-          />
-        </Field>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <div className="flex justify-end">
-          <button type="submit" disabled={busy} className="btn-primary">
-            {busy ? <Spinner /> : 'Log it'}
-          </button>
-        </div>
-      </form>
     </Modal>
   )
 }
