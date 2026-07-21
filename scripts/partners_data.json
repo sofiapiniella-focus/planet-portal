@@ -220,7 +220,7 @@
     { "id": "b0000000-0000-4000-8000-000000000605", "kit_id": "a0000000-0000-4000-8000-000000000006", "piece_name": "Pima Cotton Frayed Tank", "color": "White", "partner_decision": null },
 
     { "id": "b0000000-0000-4000-8000-000000000701", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Cotton Metallic Crochet Boatneck Sweater", "color": "Stone/Gold", "partner_decision": "Keep", "purchase_amount": 156, "purchase_status": "paid" },
-    { "id": "b0000000-0000-4000-8000-000000000702", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Pima Cotton Groovy Stripe Crewneck Sweater", "color": "Lava/Chartreuse", "partner_decision": null },
+    { "id": "b0000000-0000-4000-8000-000000000702", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Pima Cotton Groovy Stripe Crewneck Sweater", "color": "Lava/Chartreuse", "partner_decision": "Keep", "purchase_amount": 88.25, "purchase_status": "paid" },
     { "id": "b0000000-0000-4000-8000-000000000703", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Pima Cotton Jackie O Top", "color": "Peacock", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000704", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Vegan Leather Bell Bottom Pants", "color": "Black", "partner_decision": null },
     { "id": "b0000000-0000-4000-8000-000000000705", "kit_id": "a0000000-0000-4000-8000-000000000007", "piece_name": "Vegan Leather Mini Cargo Vest", "color": "Fawn", "partner_decision": null },
