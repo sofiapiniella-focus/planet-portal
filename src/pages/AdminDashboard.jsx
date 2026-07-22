@@ -216,7 +216,9 @@ export default function AdminDashboard() {
         {tab === 'social' && <SocialTab />}
         {tab === 'partners' && <PartnersTab partners={partners} onChange={load} />}
         {tab === 'referrals' && <ReferralsTab partners={partners} />}
-        {tab === 'selections' && <SelectionsTab selections={selections} onChange={load} />}
+        {tab === 'selections' && (
+          <SelectionsTab selections={selections} kits={kits} pieces={pieces} onChange={load} />
+        )}
         {tab === 'outreach' && <OutreachTab />}
         {tab === 'kits' && (
           <KitsTab partners={partners} kits={kits} pieces={pieces} onChange={load} />
@@ -1743,7 +1745,7 @@ function ReferralCreditRow({ credit, sale, referrerName, referredName, onChange 
 
 // Partners' picks from the live catalog. New submissions land here as the
 // admin's notification (count badge on the tab); Sofia marks each reviewed.
-function SelectionsTab({ selections, onChange }) {
+function SelectionsTab({ selections, kits, pieces, onChange }) {
   const [filter, setFilter] = useState('new') // new | reviewed | all
   const [catalogItems, setCatalogItems] = useState(null) // null = not loaded yet
 
@@ -1816,7 +1818,14 @@ function SelectionsTab({ selections, onChange }) {
       ) : (
         <div className="space-y-4">
           {rows.map((s) => (
-            <SelectionCard key={s.id} selection={s} onChange={onChange} catalogItems={catalogItems} />
+            <SelectionCard
+              key={s.id}
+              selection={s}
+              onChange={onChange}
+              catalogItems={catalogItems}
+              kits={kits}
+              pieces={pieces}
+            />
           ))}
         </div>
       )}
@@ -1824,7 +1833,7 @@ function SelectionsTab({ selections, onChange }) {
   )
 }
 
-function SelectionCard({ selection, onChange, catalogItems }) {
+function SelectionCard({ selection, onChange, catalogItems, kits, pieces }) {
   const [busy, setBusy] = useState(false)
   const items = Array.isArray(selection.items) ? selection.items : []
   // Style-quiz submissions carry a single tagged payload in `items`; older
@@ -1894,7 +1903,13 @@ function SelectionCard({ selection, onChange, catalogItems }) {
       </div>
 
       {quiz ? (
-        <QuizAnswers quiz={quiz} catalogItems={catalogItems} />
+        <QuizAnswers
+          quiz={quiz}
+          catalogItems={catalogItems}
+          partnerId={selection.partner_id}
+          kits={kits}
+          pieces={pieces}
+        />
       ) : (
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {items.map((it, i) => (
@@ -1944,7 +1959,7 @@ function SelectionCard({ selection, onChange, catalogItems }) {
 // Renders a partner's style-quiz answers for the curation team: the multi-select
 // vibe/color/fabric/silhouette/occasion groups as pills, plus structured sizes
 // and anything-to-avoid. Tolerant of missing sections (partner may skip some).
-function QuizAnswers({ quiz, catalogItems }) {
+function QuizAnswers({ quiz, catalogItems, partnerId, kits, pieces }) {
   const groups = [
     { key: 'vibes', label: 'Style vibe' },
     { key: 'colors', label: 'Colors & palette' },
@@ -2018,7 +2033,13 @@ function QuizAnswers({ quiz, catalogItems }) {
         </div>
       )}
 
-      <QuizTranslation quiz={quiz} catalogItems={catalogItems} />
+      <QuizTranslation
+        quiz={quiz}
+        catalogItems={catalogItems}
+        partnerId={partnerId}
+        kits={kits}
+        pieces={pieces}
+      />
     </div>
   )
 }
@@ -2028,7 +2049,7 @@ function QuizAnswers({ quiz, catalogItems }) {
 // at a glance what to pull for their box. Computed LIVE from the map in
 // ../lib/quizTranslation, so refining the map instantly re-flows every quiz
 // (old rows included, even before the backfill stamps them).
-function QuizTranslation({ quiz, catalogItems }) {
+function QuizTranslation({ quiz, catalogItems, partnerId, kits, pieces }) {
   const t = translateQuiz(quiz)
   const cols = [
     { label: 'Fabrics to pull', vals: t.fabrics },
@@ -2036,8 +2057,29 @@ function QuizTranslation({ quiz, catalogItems }) {
     { label: 'Palette', vals: t.palette },
   ].filter((c) => c.vals.length > 0)
 
+  // Pieces this partner has already received in ANY prior kit — excluded from
+  // recommendations entirely so we never re-suggest something already shipped.
+  const excludePieceNames = useMemo(() => {
+    if (!partnerId) return []
+    const partnerKitIds = new Set(
+      (Array.isArray(kits) ? kits : [])
+        .filter((k) => k.partner_id === partnerId)
+        .map((k) => k.id)
+    )
+    if (partnerKitIds.size === 0) return []
+    const names = new Set()
+    for (const p of Array.isArray(pieces) ? pieces : []) {
+      if (partnerKitIds.has(p.kit_id) && p.piece_name) {
+        names.add(String(p.piece_name).trim().toLowerCase())
+      }
+    }
+    return [...names]
+  }, [partnerId, kits, pieces])
+
   const catalogLoaded = Array.isArray(catalogItems)
-  const recommended = catalogLoaded ? recommendProducts(quiz, catalogItems, 3) : []
+  const recommended = catalogLoaded
+    ? recommendProducts(quiz, catalogItems, { limit: 3, excludePieceNames })
+    : []
 
   if (cols.length === 0) return null
 

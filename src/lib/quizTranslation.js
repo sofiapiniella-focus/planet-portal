@@ -165,16 +165,40 @@ const FABRIC_DISPLAY_TO_KEYWORDS = Object.fromEntries(
   Object.entries(FABRIC).map(([key, display]) => [display, FABRIC_KEYWORDS[key] || []])
 )
 
+// Derive a catalog item's "base name" (the garment, independent of color) by
+// stripping a trailing " - <Color>" suffix from its title — same convention
+// api/collection.js's deriveColor() relies on (split on the LAST " - ").
+// Different colors of the same piece are separate catalog entries that share
+// this base name, so it's the key used to dedupe and to check shipment history.
+function baseName(title) {
+  const t = String(title || '')
+  const dash = t.lastIndexOf(' - ')
+  return (dash > -1 ? t.slice(0, dash) : t).trim().toLowerCase()
+}
+
 /**
  * Score and rank live catalog items against a partner's translated quiz
  * preferences, for the curation team to pull from at a glance.
  * @param {object} quiz - the stored style_quiz object.
  * @param {Array} catalogItems - items from fetchCatalog() (../lib/catalog).
- * @param {number} limit - max items to return (default 3).
- * @returns {Array} up to `limit` catalog items, highest-scoring first.
+ * @param {{limit?: number, excludePieceNames?: string[]}} [opts]
+ *   - limit: max items to return (default 3).
+ *   - excludePieceNames: piece names (any case) the partner has already
+ *     received in a prior kit — matched against each item's base name and
+ *     excluded entirely, before scoring.
+ * @returns {Array} up to `limit` catalog items, highest-scoring first, never
+ *   two items sharing a base name (garment) and never an excluded piece.
  */
-export function recommendProducts(quiz, catalogItems, limit = 3) {
-  const items = Array.isArray(catalogItems) ? catalogItems : []
+export function recommendProducts(quiz, catalogItems, { limit = 3, excludePieceNames = [] } = {}) {
+  const excluded = new Set(
+    (Array.isArray(excludePieceNames) ? excludePieceNames : [])
+      .map((n) => String(n || '').trim().toLowerCase())
+      .filter(Boolean)
+  )
+
+  const items = (Array.isArray(catalogItems) ? catalogItems : []).filter(
+    (item) => !excluded.has(baseName(item?.title))
+  )
   if (items.length === 0) return []
 
   const { fabrics, pieces, palette } = translateQuiz(quiz)
@@ -190,21 +214,27 @@ export function recommendProducts(quiz, catalogItems, limit = 3) {
     if (fabricKeywords.some((kw) => title.includes(kw))) score += 2
     if (color && paletteLower.some((c) => color.includes(c))) score += 1
 
-    return { item, score, index }
+    return { item, score, index, base: baseName(item?.title) }
   })
 
   const positive = scored
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score || a.index - b.index)
 
-  if (positive.length >= limit) {
-    return positive.slice(0, limit).map((s) => s.item)
+  const chosen = []
+  const chosenBases = new Set()
+  for (const s of positive) {
+    if (chosen.length >= limit) break
+    if (chosenBases.has(s.base)) continue
+    chosen.push(s.item)
+    chosenBases.add(s.base)
   }
 
+  if (chosen.length >= limit) return chosen
+
   // Backfill with next-highest-scoring in-stock items (score can be 0) so we
-  // still return up to `limit` when the catalog has enough products — but
-  // never introduce a zero-relevance item if positives already cover it.
-  const chosen = positive.map((s) => s.item)
+  // still return up to `limit` when the catalog has enough DISTINCT pieces —
+  // never a second color of a piece already chosen.
   const chosenSet = new Set(chosen)
   const backfill = scored
     .filter((s) => !chosenSet.has(s.item) && s.item?.available !== false)
@@ -212,7 +242,9 @@ export function recommendProducts(quiz, catalogItems, limit = 3) {
 
   for (const s of backfill) {
     if (chosen.length >= limit) break
+    if (chosenBases.has(s.base)) continue
     chosen.push(s.item)
+    chosenBases.add(s.base)
   }
 
   return chosen.slice(0, limit)
