@@ -176,49 +176,54 @@ function baseName(title) {
   return (dash > -1 ? t.slice(0, dash) : t).trim().toLowerCase()
 }
 
-// ── Category inference for size filtering ──
-// The style quiz stores sizes as quiz.sizes = { tops, bottoms, dress, shoe }
-// (see SIZE_LABELS in AdminDashboard.jsx's QuizAnswers). The catalog has no
-// direct field for this, so we infer which of those a catalog item belongs to.
-// Layering Pieces (jackets/vests/capes) and Jumpsuits have no corresponding
-// quiz.sizes field, so they're intentionally left out of this map — those
-// items (and anything else we can't confidently categorize) are never
-// size-filtered, rather than guessing wrong and zeroing out inventory.
-const SILHOUETTE_SIZE_CATEGORY = {
-  'Pants-forward': 'bottoms',
-  Skirts: 'bottoms',
-  Dresses: 'dress',
-  'Tops & Blouses': 'tops',
-}
+// ── Outfit-role classification ──
+// A coarse bucket for what part of a look a catalog item plays: 'tops',
+// 'bottoms', 'dress', or 'outerwear' (SILHOUETTE_MAP's "Layering Pieces" —
+// jackets, vests, capes, coats, cardigans, bombers, kimonos). Tries
+// Shopify's own product_type first, then falls back to the same regex
+// against the title. These patterns were chosen by pulling a real page of
+// https://shopplanetbylaureng.com/collections/stylist-collective/products.json
+// and reading the actual product_type/title values in the live catalog
+// (observed product_types: Dress, Pants, T-Shirt, Tank, Sweater, Top,
+// Shirt, Skirt, Capes, Jacket, Vest) — NOT SILHOUETTE_MAP's curator
+// piece-name strings (see inferSilhouetteCategory below), which are
+// shorthand for the Translation display and almost never substring-match
+// actual Shopify titles. Returns null when it can't confidently tell.
+const DRESS_RE = /dress/
+const BOTTOMS_RE = /pant|skirt|short|trouser|bottom|gaucho/
+const OUTERWEAR_RE = /jacket|blazer|vest|cape|coat|cardigan|bomber|kimono/
+const TOPS_RE = /top|blouse|tee|shirt|tank/
 
-// Infer a catalog item's quiz.sizes category ('tops' | 'bottoms' | 'dress'),
-// trying Shopify's own product_type first, then falling back to matching the
-// item's title against the piece names grouped in SILHOUETTE_MAP. Returns
-// null when it can't confidently tell — callers must treat that as "don't
-// filter this item on size."
-function inferSizeCategory(item) {
+function inferOutfitRole(item) {
   const productType = String(item?.product_type || '').toLowerCase().trim()
   if (productType) {
-    if (/dress/.test(productType)) return 'dress'
-    if (/pant|skirt|short|trouser|bottom|gaucho/.test(productType)) return 'bottoms'
-    if (/top|blouse|tee|shirt|tank/.test(productType)) return 'tops'
+    if (DRESS_RE.test(productType)) return 'dress'
+    if (BOTTOMS_RE.test(productType)) return 'bottoms'
+    if (OUTERWEAR_RE.test(productType)) return 'outerwear'
+    if (TOPS_RE.test(productType)) return 'tops'
   }
 
   const title = String(item?.title || '').toLowerCase()
-  for (const [silhouette, category] of Object.entries(SILHOUETTE_SIZE_CATEGORY)) {
-    const piecesForSilhouette = SILHOUETTE_MAP[silhouette] || []
-    if (piecesForSilhouette.some((p) => title.includes(p.toLowerCase()))) return category
-  }
+  if (DRESS_RE.test(title)) return 'dress'
+  if (BOTTOMS_RE.test(title)) return 'bottoms'
+  if (OUTERWEAR_RE.test(title)) return 'outerwear'
+  if (TOPS_RE.test(title)) return 'tops'
+
   return null
 }
 
 // Whether a catalog item should be dropped because it's confidently NOT in
-// the partner's answered size. Only filters when we can confidently tell
-// BOTH the item's category AND that it has a size dimension at all (a
-// non-empty availableSizes) — an unknown category, a blank quiz answer for
-// that category, or no "Size" option on the product all mean "don't filter."
+// the partner's answered size. quiz.sizes only has tops/bottoms/dress/shoe
+// fields (see SIZE_LABELS in AdminDashboard.jsx's QuizAnswers) — 'outerwear'
+// (and anything inferOutfitRole can't classify) has no corresponding field,
+// so it's never size-filtered, rather than guessing wrong and zeroing out
+// inventory. Only filters when we can confidently tell BOTH the item's
+// category AND that it has a size dimension at all (a non-empty
+// availableSizes) — a blank quiz answer for that category, or no "Size"
+// option on the product, also both mean "don't filter."
 function failsSizeFilter(item, sizesAnswered) {
-  const category = inferSizeCategory(item)
+  const role = inferOutfitRole(item)
+  const category = role === 'tops' || role === 'bottoms' || role === 'dress' ? role : null
   if (!category) return false
   const wanted = sizesAnswered[category]
   if (!wanted || !String(wanted).trim()) return false
@@ -228,13 +233,13 @@ function failsSizeFilter(item, sizesAnswered) {
   return !sizes.some((s) => String(s).trim().toLowerCase() === wantedNorm)
 }
 
-// Which SILHOUETTE_MAP category (if any) a catalog item belongs to, by the
-// same title-match approach the piece-scoring below uses. Items that don't
-// match any category get their own singleton "category" — grouped by
-// product_type when there is one (so, say, multiple unmatched "Accessories"
-// still compete for one slot), or by product id when there isn't (fully
-// unique, so a totally uncategorizable item is always eligible and never
-// crowds out — or gets crowded out by — anything else).
+// Matches a catalog item's title against SILHOUETTE_MAP's curator piece-name
+// strings (e.g. "Nylon Chic Cape"). Kept for the existing +3 signature-piece
+// score boost below (pieces.some(...) match) — a fine signal for "does this
+// closely match one of our named pieces." NOT used to group items into an
+// outfit anymore: those piece names are shorthand for the Translation
+// display, not real Shopify titles, and almost never substring-match actual
+// inventory — inferOutfitRole (above) is the real classifier used for that.
 function inferSilhouetteCategory(item) {
   const title = String(item?.title || '').toLowerCase()
   for (const [silhouette, piecesForSilhouette] of Object.entries(SILHOUETTE_MAP)) {
@@ -247,11 +252,11 @@ function inferSilhouetteCategory(item) {
 
 /**
  * Score and rank live catalog items against a partner's translated quiz
- * preferences, for the curation team to pull from at a glance. Results are
- * category-diverse: a curated box shouldn't repeat a garment type (e.g. 3
- * jackets) just because those items scored well — one item per SILHOUETTE_MAP
- * category is preferred, in the partner's own silhouette-pick order, before
- * a second item from any category is allowed in.
+ * preferences, for the curation team to pull from at a glance. Results aim
+ * for a genuine outfit: one 'outerwear' + one 'tops' + one 'bottoms' item
+ * when all three roles have an eligible candidate, or a 'dress' + 'outerwear'
+ * pairing instead when the partner clearly leans toward dresses — never 3
+ * items sharing an outfit role just because they scored well.
  * @param {object} quiz - the stored style_quiz object.
  * @param {Array} catalogItems - items from fetchCatalog() (../lib/catalog).
  *   Each item's `availableSizes` (if any) is checked against quiz.sizes.
@@ -261,9 +266,9 @@ function inferSilhouetteCategory(item) {
  *     received in a prior kit — matched against each item's base name and
  *     excluded entirely, before scoring.
  * @returns {Array} up to `limit` catalog items, never two sharing a base name
- *   (garment) or a SILHOUETTE_MAP category unless there weren't enough
- *   distinct categories to fill `limit`, never an excluded piece, and never
- *   an item confidently known to be out of stock in the partner's size.
+ *   (garment) or an outfit role unless there weren't enough distinct roles
+ *   left to fill `limit`, never an excluded piece, and never an item
+ *   confidently known to be out of stock in the partner's size.
  */
 export function recommendProducts(quiz, catalogItems, { limit = 3, excludePieceNames = [] } = {}) {
   const excluded = new Set(
@@ -292,56 +297,35 @@ export function recommendProducts(quiz, catalogItems, { limit = 3, excludePieceN
     if (fabricKeywords.some((kw) => title.includes(kw))) score += 2
     if (color && paletteLower.some((c) => color.includes(c))) score += 1
 
-    return { item, score, index, base: baseName(item?.title), category: inferSilhouetteCategory(item) }
+    return { item, score, index, base: baseName(item?.title), role: inferOutfitRole(item) }
   })
 
-  const sorted = [...scored].sort((a, b) => b.score - a.score || a.index - b.index)
+  const pool = scored
+    .filter((s) => s.item?.available !== false)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
 
-  // Category priority order: the partner's own silhouette picks first. The
-  // `pieces` list (from translateQuiz) is already ordered by pick order —
-  // walk it and map each piece name back to its category to recover that
-  // order without re-reading the raw quiz.silhouettes array. Then append any
-  // other categories present among the candidates (best-score-first) so
-  // off-silhouette items can still contribute to diversity.
-  const pieceToCategory = new Map()
-  for (const [silhouette, piecesForSilhouette] of Object.entries(SILHOUETTE_MAP)) {
-    for (const p of piecesForSilhouette) pieceToCategory.set(p, silhouette)
-  }
-  const categoryOrder = []
-  const seenCategory = new Set()
-  for (const p of pieces) {
-    const cat = pieceToCategory.get(p)
-    if (cat && !seenCategory.has(cat)) {
-      seenCategory.add(cat)
-      categoryOrder.push(cat)
-    }
-  }
-  for (const s of sorted) {
-    if (!seenCategory.has(s.category)) {
-      seenCategory.add(s.category)
-      categoryOrder.push(s.category)
-    }
-  }
-
-  // The full eligible pool (already passed excludePieceNames + size filters,
-  // score-sorted). Category diversity must be enforced across the ENTIRE
-  // selection — including what used to be a separate "backfill" step — or a
-  // strong-scoring already-used category (e.g. a partner's 2nd-favorite
-  // silhouette) keeps winning every remaining slot ahead of a genuinely
-  // unused category that just happens to score 0 on fabric/palette.
-  const pool = sorted.filter((s) => s.item?.available !== false)
+  // Outfit template: outerwear + tops + bottoms (a real jacket/top/bottom
+  // look) is the default. If the partner clearly leans toward dresses —
+  // they picked 'Dresses' as a silhouette, or their single best-scoring
+  // eligible item is a dress — swap to a dress + outerwear pairing instead
+  // of forcing a top+bottom split. Whichever roles aren't in the template
+  // still get a turn afterward (before any repeat); a role just never
+  // crowds out one that's ahead of it in this order.
+  const leansDress =
+    (Array.isArray(quiz?.silhouettes) && quiz.silhouettes.includes('Dresses')) ||
+    pool[0]?.role === 'dress'
+  const roleOrder = leansDress
+    ? ['dress', 'outerwear', 'tops', 'bottoms']
+    : ['outerwear', 'tops', 'bottoms', 'dress']
 
   const chosen = []
   const chosenBases = new Set()
 
-  // Round 1: for each distinct category (priority order), take its single
-  // best-scoring eligible item — score can be 0. A category with ANY
-  // eligible item always gets its turn before any category repeats,
-  // regardless of how much lower its best item scores than an already-used
-  // category's next item.
-  for (const cat of categoryOrder) {
+  // Round 1: one best-scoring item per role, template order — a role with
+  // ANY eligible item gets its turn before any role repeats.
+  for (const role of roleOrder) {
     if (chosen.length >= limit) break
-    const best = pool.find((s) => s.category === cat && !chosenBases.has(s.base))
+    const best = pool.find((s) => s.role === role && !chosenBases.has(s.base))
     if (!best) continue
     chosen.push(best.item)
     chosenBases.add(best.base)
@@ -349,9 +333,19 @@ export function recommendProducts(quiz, catalogItems, { limit = 3, excludePieceN
 
   if (chosen.length >= limit) return chosen
 
-  // Round 2: only reached once every distinct category has either
-  // contributed an item or been confirmed to have none left in the full
-  // pool — now it's fine to repeat a category, highest score first.
+  // Round 2: still short — repeat a recognized role (best score first)
+  // before ever reaching for an item we couldn't confidently classify.
+  for (const s of pool) {
+    if (chosen.length >= limit) break
+    if (s.role === null || chosenBases.has(s.base)) continue
+    chosen.push(s.item)
+    chosenBases.add(s.base)
+  }
+
+  if (chosen.length >= limit) return chosen
+
+  // Round 3: last resort — only unclassifiable items are left, which is the
+  // one case they're allowed to fill a slot.
   for (const s of pool) {
     if (chosen.length >= limit) break
     if (chosenBases.has(s.base)) continue
