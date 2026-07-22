@@ -196,6 +196,51 @@
       "sends": null,
       "views": null,
       "permalink": null
+    },
+    {
+      "partner_handle": "@surrealstylewithcourtney",
+      "partner_name": "Courtney Smith",
+      "type": "Instagram",
+      "platform": "Instagram",
+      "caption": "Another casual day at the lake house! Trying out some more @planetbylaureng 💕 Truth be told I love a baggy pant but…",
+      "posted_date": "2026-07-17",
+      "date_note": "posted ~5 days ago",
+      "likes": 46,
+      "comments": 24,
+      "shares": 1,
+      "sends": null,
+      "views": null,
+      "permalink": null
+    },
+    {
+      "partner_handle": "@surrealstylewithcourtney",
+      "partner_name": "Courtney Smith",
+      "type": "Instagram",
+      "platform": "Instagram",
+      "caption": "Back from our family trip so here's a wrap up of my casual looks for our time there…",
+      "posted_date": "2026-07-20",
+      "date_note": "posted ~2 days ago; carousel (7 slides), Planet piece not in the visible slide",
+      "likes": 45,
+      "comments": 4,
+      "shares": null,
+      "sends": null,
+      "views": null,
+      "permalink": null
+    },
+    {
+      "partner_handle": "@surrealstylewithcourtney",
+      "partner_name": "Courtney Smith",
+      "type": "Instagram",
+      "platform": "Instagram",
+      "caption": "Let's discuss versatility. The other day I showed me wearing these @planetbylaureng pants casually. Today was…",
+      "posted_date": "2026-07-22",
+      "date_note": "posted ~7 hours ago; same Planet pants as the 2026-07-17 casual post, styled up",
+      "likes": 16,
+      "comments": 5,
+      "shares": 1,
+      "sends": 1,
+      "views": null,
+      "permalink": null
     }
   ]
 }
