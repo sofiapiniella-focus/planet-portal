@@ -2556,23 +2556,36 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
   const [localPieces, setLocalPieces] = useState(pieces)
   const [newPiece, setNewPiece] = useState({ piece_name: '', color: '', photo_url: '' })
   const [trackMsg, setTrackMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
 
   function set(k, v) {
     setForm((f) => ({ ...f, [k]: v }))
   }
 
-  // Ensures a kit exists, returns its id.
-  async function ensureKit() {
-    if (kit?.id) {
-      await supabase.from('kits').update(form).eq('id', kit.id)
-      return kit.id
+  // Postgres rejects '' for a `date` column — the date inputs default to ''
+  // when a kit has no date yet, so blank them out to null before sending.
+  function kitPayload() {
+    return {
+      ...form,
+      ship_date: form.ship_date || null,
+      return_by_date: form.return_by_date || null,
     }
-    const { data } = await supabase
+  }
+
+  // Ensures a kit exists, returns { id, error }. Never throws — callers must
+  // check `error` themselves and stop rather than proceeding as if it saved.
+  async function ensureKit() {
+    const payload = kitPayload()
+    if (kit?.id) {
+      const { error } = await supabase.from('kits').update(payload).eq('id', kit.id)
+      return { id: kit.id, error }
+    }
+    const { data, error } = await supabase
       .from('kits')
-      .insert({ ...form, partner_id: partner.id })
+      .insert({ ...payload, partner_id: partner.id })
       .select()
       .single()
-    return data.id
+    return { id: data?.id, error }
   }
 
   // Register the tracking number with AfterShip (carrier auto-detected) so the
@@ -2618,7 +2631,13 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
 
   async function saveKit() {
     setBusy(true)
-    const kitId = await ensureKit()
+    setErrorMsg('')
+    const { id: kitId, error } = await ensureKit()
+    if (error) {
+      setBusy(false)
+      setErrorMsg(`Couldn't save: ${error.message}`)
+      return
+    }
     const attempted = await startTracking(kitId)
     setBusy(false)
     onChange()
@@ -2630,12 +2649,23 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
   async function addPiece() {
     if (!newPiece.piece_name.trim()) return
     setBusy(true)
-    const kitId = await ensureKit()
-    const { data } = await supabase
+    setErrorMsg('')
+    const { id: kitId, error: kitError } = await ensureKit()
+    if (kitError) {
+      setBusy(false)
+      setErrorMsg(`Couldn't save: ${kitError.message}`)
+      return
+    }
+    const { data, error } = await supabase
       .from('kit_pieces')
       .insert({ ...newPiece, kit_id: kitId })
       .select()
       .single()
+    if (error) {
+      setBusy(false)
+      setErrorMsg(`Couldn't add piece: ${error.message}`)
+      return
+    }
     setLocalPieces((prev) => [...prev, data])
     setNewPiece({ piece_name: '', color: '', photo_url: '' })
     setBusy(false)
@@ -2644,7 +2674,13 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
 
   async function deletePiece(id) {
     setBusy(true)
-    await supabase.from('kit_pieces').delete().eq('id', id)
+    setErrorMsg('')
+    const { error } = await supabase.from('kit_pieces').delete().eq('id', id)
+    if (error) {
+      setBusy(false)
+      setErrorMsg(`Couldn't delete piece: ${error.message}`)
+      return
+    }
     setLocalPieces((prev) => prev.filter((p) => p.id !== id))
     setBusy(false)
     onChange()
@@ -2771,7 +2807,8 @@ function KitModal({ partner, kit, pieces, onClose, onChange }) {
           </button>
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex items-center justify-end gap-3 pt-2">
+          {errorMsg && <p className="text-xs text-red-600 flex-1">{errorMsg}</p>}
           <button onClick={saveKit} disabled={busy} className="btn-primary">
             {busy ? <Spinner /> : 'Save kit'}
           </button>
